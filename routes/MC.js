@@ -4,7 +4,7 @@ const request = require('request');
 const fs = require('fs')
 const path = require('path')
 const multer = require("multer");
-const pool = require("../models")
+const models = require("../models")
 
 router.post('/register',function(req,res){
     var username = req.body.username;
@@ -14,7 +14,8 @@ router.post('/register',function(req,res){
     if(username == ""|| password == "" || email == ""){
         res.status(400).send("ada field yang tidak diisi");
     }
-    pool.getConnection(function(err,conn){
+    models.getConnection(function(err,conn){
+        console.log("waow")
         if(err) res.status(500).send(err);
         else{
             conn.query(`select * from user where email = '${email}'`,function(error,result){
@@ -46,8 +47,7 @@ router.post("/login" , function(req,res){
         let angka = Math.floor(Math.random() * 10);
         key += angka;
     }
-
-    pool.getConnection(function(err,conn){
+    models.getConnection(function(err,conn){
         if(err) res.status(500).send(err);
         else{
             conn.query(`select * from user where email = '${email}' and password = '${password}'`,function(error,result){
