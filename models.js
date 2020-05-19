@@ -63,6 +63,5 @@ module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
-  deleteWishlist: deleteWishlist,
-  getConnection : getConnection
+  deleteWishlist: deleteWishlist
 }
