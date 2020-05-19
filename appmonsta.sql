@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2020 at 05:48 PM
+-- Generation Time: May 19, 2020 at 12:43 PM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -37,15 +37,22 @@ CREATE TABLE `user` (
   `email` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`api_key`, `username`, `password`, `email`) VALUES
+('1234567890', 'user1', 'pass1', 'user1@gmail.com');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `whistlist`
+-- Table structure for table `wishlist`
 --
 
-CREATE TABLE `whistlist` (
-  `app_id` text NOT NULL,
-  `api_key` varchar(10) NOT NULL
+CREATE TABLE `wishlist` (
+  `api_key` varchar(10) NOT NULL,
+  `app_id` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 COMMIT;
 
