@@ -3,9 +3,12 @@ const port = process.env.PORT || 3000;
 const app = express();
 const request = require("request");
 const models = require("./models");
+const mc = require("./routes/mc")
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+app.use("/api/mc" , mc);
+
 require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
