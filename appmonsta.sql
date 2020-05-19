@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2020 at 12:43 PM
--- Server version: 10.4.8-MariaDB
--- PHP Version: 7.3.11
+-- Generation Time: May 19, 2020 at 03:17 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -30,29 +30,25 @@ USE `appmonsta`;
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `api_key` varchar(10) NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL,
-  `email` text NOT NULL
+  `email` text NOT NULL,
+  `profile_picture` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`api_key`, `username`, `password`, `email`) VALUES
-('1234567890', 'user1', 'pass1', 'user1@gmail.com');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wishlist`
+-- Table structure for table `whistlist`
 --
 
-CREATE TABLE `wishlist` (
-  `api_key` varchar(10) NOT NULL,
-  `app_id` text NOT NULL
+DROP TABLE IF EXISTS `whistlist`;
+CREATE TABLE `whistlist` (
+  `app_id` text NOT NULL,
+  `api_key` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 COMMIT;
 
