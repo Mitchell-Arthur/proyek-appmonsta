@@ -134,9 +134,13 @@ module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
+<<<<<<< HEAD
   deleteWishlist: deleteWishlist,
   getConnection : getConnection,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile
+=======
+  deleteWishlist: deleteWishlist
+>>>>>>> 2c88d356155fb71808e677c9052f234dc6693fbd
 }
