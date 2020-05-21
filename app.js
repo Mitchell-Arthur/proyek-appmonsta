@@ -8,6 +8,7 @@ const mc = require("./routes/mc")
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use("/api/mc" , mc);
+app.use(express.static('./public'));
 
 require('dotenv').config();
 app.set('view engine','ejs');

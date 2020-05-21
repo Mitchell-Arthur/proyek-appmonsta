@@ -27,6 +27,77 @@ function executeQuery(conn, query) {
   });
 }
 
+//query untuk Register
+async function register_user(username, password, email){
+    const conn = await getConnection();
+    let query = `select * from user where email = '${email}'`
+    let result = await executeQuery(conn, query)
+    if(result.length>0){
+      conn.release();
+      return false;
+    }
+    else{
+      let query  = `insert into user values('','${username}','${password}','${email}','default.jpg')`;
+      const result = await executeQuery(conn, query);
+      conn.release();
+      return result;
+    }
+}
+
+//query untuk login
+async function login_user(email, password){
+    const conn = await getConnection();
+    var key = "";
+    var kembar = true;
+    for(var i =0;i<10;i++){
+        let angka = Math.floor(Math.random() * 10);
+        key += angka;
+    }
+    let query  = `select * from user where email = '${email}' and password = '${password}'`;
+    var result = await executeQuery(conn, query);
+    if(result.length>0){
+        let query  = `select * from user`;
+        let result = await executeQuery(conn, query);
+          while(kembar == true){
+            kembar = false;
+            result.forEach(element => {
+                if(result.login_key == key){
+                    kembar = true;
+                    key = "";
+                    for(var i =0;i<10;i++){
+                        let angka = Math.floor(Math.random() * 10);
+                        key += angka;
+                    }
+                }
+            });
+        }
+        query = `update user set api_key = '${key}' where email = '${email}'`
+        await executeQuery(conn,query);
+        conn.release()
+        return key;
+    }
+    else{
+        conn.release();
+        return false;
+    }
+}
+
+//query untuk update profile user
+async function update_profile(username, password, profile_picture, email){
+  const conn = await getConnection();
+  let query =  `select * from user where email = '${email}'`;
+  let result = await executeQuery(conn,query);
+  if(result.length == 0){
+    conn.release();
+    return false;
+  }
+  else{
+    let query = `update user set username = '${username}', password = '${password}', profile_picture = '${profile_picture}' where email = '${email}'`
+    let result = await executeQuery(conn,query);
+    conn.release();
+    return true;
+  }
+}
 //mungkin tidak dipakai
 async function getUser(user_key){
   const conn = await getConnection();
@@ -64,5 +135,8 @@ module.exports = {
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
-  getConnection : getConnection
+  getConnection : getConnection,
+  login_user : login_user,
+  register_user : register_user,
+  update_profile : update_profile
 }
