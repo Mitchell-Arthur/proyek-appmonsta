@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const multer = require("multer");
 const models = require("../models")
+const jwt = require("jsonwebtoken");
 
 //SET STORAGE ENGINE
 const storage=multer.diskStorage({
@@ -58,7 +59,11 @@ router.post("/login" ,async function(req,res){
         res.status(400).send("Login gagal user tidak ditemukan")
     }
     else{
-        res.status(200).send(result)
+        const token = jwt.sign({    
+            "email":result.email,
+            "level":result.status
+        }   ,"tugas6");
+        res.status(200).send(token);
     }
 });
 

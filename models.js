@@ -85,17 +85,18 @@ async function login_user(email, password){
 //query untuk update profile user
 async function update_profile(username, password, profile_picture, email){
   const conn = await getConnection();
-  let query =  `select * from user where email = '${email}'`;
-  let result = await executeQuery(conn,query);
+  var query =  `select * from user where email = '${email}'`;
+  var result = await executeQuery(conn,query);
   if(result.length == 0){
     conn.release();
     return false;
   }
   else{
-    let query = `update user set username = '${username}', password = '${password}', profile_picture = '${profile_picture}' where email = '${email}'`
-    let result = await executeQuery(conn,query);
+    var user = result[0]
+    query = `update user set username = '${username}', password = '${password}', profile_picture = '${profile_picture}' where email = '${email}'`
+    result = await executeQuery(conn,query);
     conn.release();
-    return true;
+    return user;
   }
 }
 //mungkin tidak dipakai
@@ -134,13 +135,10 @@ module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
-<<<<<<< HEAD
   deleteWishlist: deleteWishlist,
   getConnection : getConnection,
   login_user : login_user,
   register_user : register_user,
-  update_profile : update_profile
-=======
+  update_profile : update_profile,
   deleteWishlist: deleteWishlist
->>>>>>> 2c88d356155fb71808e677c9052f234dc6693fbd
 }

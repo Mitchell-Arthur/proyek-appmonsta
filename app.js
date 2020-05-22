@@ -7,7 +7,6 @@ const mitchell = require("./routes/Mitchell");
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use("/api/mc" , mc);
-<<<<<<< HEAD
 app.use(express.static('./public'));
 
 require('dotenv').config();
@@ -102,9 +101,7 @@ app.delete('/lob/api/removeWishlist', async function(req, res) {
     if (result) res.status(200).send({message:"app berhasil dibuang dari wishlist"});
   } else return res.status(400).send({message:"User belum terdaftar"});  // mungkin tidak terpakai
 });
-=======
 app.use("/api/mitchell", mitchell);
->>>>>>> 2c88d356155fb71808e677c9052f234dc6693fbd
 
 app.listen(port, () => {
   console.log(`listening port ${port}`);
