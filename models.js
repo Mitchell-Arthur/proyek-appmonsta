@@ -37,7 +37,7 @@ async function register_user(username, password, email){
       return false;
     }
     else{
-      let query  = `insert into user values('','${username}','${password}','${email}',1,'default.jpg')`;
+      let query  = `insert into user values('${username}','${password}','${email}',1,'default.jpg',5)`;
       const result = await executeQuery(conn, query);
       conn.release();
       return result;
@@ -77,34 +77,33 @@ async function update_profile(username, password, profile_picture, email){
     return user;
   }
 }
+
 //mungkin tidak dipakai
-async function getUser(user_key){
+async function getUser(email){
   const conn = await getConnection();
-  let query = `SELECT * FROM user WHERE api_key ='${user_key}'`;
+  let query = `SELECT * FROM user WHERE email ='${email}'`;
   const result = await executeQuery(conn, query);
   conn.release();
   return result;
 }
 
-async function getWishlist(user_key, app_id){
+async function getWishlist(email, app_id){
   const conn = await getConnection();
-  let query = `SELECT * FROM wishlist WHERE api_key ='${user_key}'`;
-  if (app_id) query += ` AND app_id = '${app_id}'`;
-  const result = await executeQuery(conn, query);
+  const result = await executeQuery(conn, `SELECT * FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
   conn.release();
   return result;
 }
 
-async function insertWishlist(user_key, app_id){
+async function insertWishlist(email, app_id){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `INSERT INTO wishlist VALUES ('${user_key}','${app_id}')`);
+  const result = await executeQuery(conn, `INSERT INTO wishlist VALUES ('${email}','${app_id}')`);
   conn.release();
   return result;
 }
 
-async function deleteWishlist(user_key, app_id){
+async function deleteWishlist(email, app_id){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `DELETE FROM wishlist WHERE api_key ='${user_key}' AND app_id = '${app_id}'`);
+  const result = await executeQuery(conn, `DELETE FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
   conn.release();
   return result;
 }
@@ -123,7 +122,6 @@ module.exports = {
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
-  getConnection : getConnection,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
