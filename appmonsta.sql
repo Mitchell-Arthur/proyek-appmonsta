@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2020 at 07:48 AM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.2
+-- Waktu pembuatan: 24 Bulan Mei 2020 pada 18.53
+-- Versi server: 10.4.6-MariaDB
+-- Versi PHP: 7.3.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `appmonsta`
 --
+CREATE DATABASE IF NOT EXISTS `appmonsta` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `appmonsta`;
 
 -- --------------------------------------------------------
 
@@ -28,6 +30,7 @@ SET time_zone = "+00:00";
 -- Struktur dari tabel `post`
 --
 
+DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
   `id_post` int(11) NOT NULL,
   `email` text NOT NULL,
@@ -46,32 +49,35 @@ CREATE TABLE `post` (
 -- Struktur dari tabel `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `api_key` varchar(10) NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL,
   `email` varchar(50) NOT NULL,
   `tipe_user` int(5) NOT NULL,
-  `profile_picture` varchar(50) NOT NULL
+  `profile_picture` varchar(50) NOT NULL,
+  `api_hit` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
-INSERT INTO `user` (`api_key`, `username`, `password`, `email`, `tipe_user`, `profile_picture`) VALUES
-('', 'ike', '123', 'mike.com', 1, 'default.jpg'),
-('', 'mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg');
+INSERT INTO `user` (`username`, `password`, `email`, `tipe_user`, `profile_picture`, `api_hit`) VALUES
+('ike', '123', 'mike.com', 1, 'default.jpg', 5),
+('mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg', 5),
+('ming', 'ming123', 'ming@gmail.com', 2, '', 5);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `whistlist`
+-- Struktur dari tabel `wishlist`
 --
 
-CREATE TABLE `whistlist` (
-  `app_id` text NOT NULL,
-  `api_key` varchar(10) NOT NULL
+DROP TABLE IF EXISTS `wishlist`;
+CREATE TABLE `wishlist` (
+  `email` text NOT NULL,
+  `app_id` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -79,14 +85,16 @@ CREATE TABLE `whistlist` (
 --
 
 --
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`email`);
 -- Indeks untuk tabel `post`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`id_post`);
+
+--
+-- Indeks untuk tabel `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`email`);
 
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
@@ -96,7 +104,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT untuk tabel `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
