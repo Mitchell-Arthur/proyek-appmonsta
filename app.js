@@ -4,6 +4,9 @@ const app = express();
 const mc = require("./routes/mc");
 const mitchell = require("./routes/Mitchell");
 
+//Ming
+const post = require("./routes/post");
+
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use("/api/mc" , mc);
@@ -102,6 +105,7 @@ app.delete('/lob/api/removeWishlist', async function(req, res) {
   } else return res.status(400).send({message:"User belum terdaftar"});  // mungkin tidak terpakai
 });
 app.use("/api/mitchell", mitchell);
+app.use("/api/post",post);
 
 app.listen(port, () => {
   console.log(`listening port ${port}`);

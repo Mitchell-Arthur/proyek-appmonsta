@@ -109,10 +109,41 @@ async function deleteWishlist(email, app_id){
 }
 
 //MING - Add post
-async function insertPost(username, judul_post, caption_post, img_path, app_id){
+async function insertPost(email, judul_post, caption_post, app_id){
   const conn = await getConnection();
   const tgl_now = new Date();
-  const result = await executeQuery(conn, `INSERT INTO post VALUES ('','${username}',0,0,'${tgl_now}','${judul_post}','${caption_post}','${img_path}','${app_id}')`);
+  const result = await executeQuery(conn, `INSERT INTO post VALUES ('','${email}',0,0,'${tgl_now}','${judul_post}','${caption_post}','none','${app_id}')`);
+  conn.release();
+  return result;
+}
+
+async function insertLastPostIMG(img_path){
+  const conn = await getConnection();
+  const lastPost = await executeQuery(conn, `SELECT MAX(id_post) as id_post FROM post`);
+  const result = await executeQuery(conn, `UPDATE post SET img_path='${lastPost}${img_path}' WHERE id_post=${lastPost[0].id_post} `);
+  conn.release();
+  return result;
+}
+
+async function getLastPost(){
+  const conn = await getConnection();
+  const lastPost = await executeQuery(conn, `SELECT MAX(id_post) as id_post FROM post`);
+  const result = await executeQuery(conn, `SELECT * FROM post WHERE id_post = ${lastPost[0].id_post}`);
+  conn.release();
+  return result;
+}
+
+async function deleteLastPost(){
+  const conn = await getConnection();
+  const lastPost = await executeQuery(conn, `SELECT MAX(id_post) as id_post FROM post`);
+  const result = await executeQuery(conn, `DELETE FROM post WHERE id_post = ${lastPost[0].id_post}`);
+  conn.release();
+  return result;
+}
+
+async function getPost(){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM post`);
   conn.release();
   return result;
 }
@@ -126,5 +157,9 @@ module.exports = {
   register_user : register_user,
   update_profile : update_profile,
   deleteWishlist: deleteWishlist,
-  insertPost: insertPost
+  insertPost: insertPost,
+  insertLastPostIMG: insertLastPostIMG,
+  getLastPost: getLastPost,
+  getPost: getPost,
+  deleteLastPost: deleteLastPost
 }

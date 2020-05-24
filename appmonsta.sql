@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2020 at 01:23 PM
--- Server version: 10.4.8-MariaDB
--- PHP Version: 7.3.11
+-- Waktu pembuatan: 24 Bulan Mei 2020 pada 18.53
+-- Versi server: 10.4.6-MariaDB
+-- Versi PHP: 7.3.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -27,9 +27,10 @@ USE `appmonsta`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `post`
+-- Struktur dari tabel `post`
 --
 
+DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
   `id_post` int(11) NOT NULL,
   `email` text NOT NULL,
@@ -45,9 +46,10 @@ CREATE TABLE `post` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `username` text NOT NULL,
   `password` text NOT NULL,
@@ -58,19 +60,21 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
 INSERT INTO `user` (`username`, `password`, `email`, `tipe_user`, `profile_picture`, `api_hit`) VALUES
 ('ike', '123', 'mike.com', 1, 'default.jpg', 5),
-('mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg', 5);
+('mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg', 5),
+('ming', 'ming123', 'ming@gmail.com', 2, '', 5);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wishlist`
+-- Struktur dari tabel `wishlist`
 --
 
+DROP TABLE IF EXISTS `wishlist`;
 CREATE TABLE `wishlist` (
   `email` text NOT NULL,
   `app_id` text NOT NULL
@@ -81,26 +85,26 @@ CREATE TABLE `wishlist` (
 --
 
 --
--- Indexes for table `post`
+-- Indeks untuk tabel `post`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`id_post`);
 
 --
--- Indexes for table `user`
+-- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `post`
+-- AUTO_INCREMENT untuk tabel `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
