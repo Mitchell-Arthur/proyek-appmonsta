@@ -131,6 +131,15 @@ async function deleteWishlist(user_key, app_id){
   return result;
 }
 
+//MING - Add post
+async function insertPost(username, judul_post, caption_post, img_path, app_id){
+  const conn = await getConnection();
+  const tgl_now = new Date();
+  const result = await executeQuery(conn, `INSERT INTO post VALUES ('','${username}',0,0,'${tgl_now}','${judul_post}','${caption_post}','${img_path}','${app_id}')`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
@@ -140,5 +149,6 @@ module.exports = {
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
-  deleteWishlist: deleteWishlist
+  deleteWishlist: deleteWishlist,
+  insertPost: insertPost
 }
