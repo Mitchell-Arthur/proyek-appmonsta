@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
@@ -21,16 +21,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `appmonsta`
 --
-CREATE DATABASE IF NOT EXISTS `appmonsta` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `appmonsta`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `post`
 --
 
-DROP TABLE IF EXISTS `user`;
+CREATE TABLE `post` (
+  `id_post` int(11) NOT NULL,
+  `email` text NOT NULL,
+  `total_up` int(11) DEFAULT NULL,
+  `total_down` int(11) DEFAULT NULL,
+  `tgl_post` date NOT NULL,
+  `judul_post` varchar(50) NOT NULL,
+  `caption_post` varchar(255) DEFAULT NULL,
+  `img_path` text DEFAULT NULL,
+  `app_id` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `user`
+--
+
 CREATE TABLE `user` (
   `api_key` varchar(10) NOT NULL,
   `username` text NOT NULL,
@@ -51,10 +66,9 @@ INSERT INTO `user` (`api_key`, `username`, `password`, `email`, `tipe_user`, `pr
 -- --------------------------------------------------------
 
 --
--- Table structure for table `whistlist`
+-- Struktur dari tabel `whistlist`
 --
 
-DROP TABLE IF EXISTS `whistlist`;
 CREATE TABLE `whistlist` (
   `app_id` text NOT NULL,
   `api_key` varchar(10) NOT NULL
@@ -69,6 +83,20 @@ CREATE TABLE `whistlist` (
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`email`);
+-- Indeks untuk tabel `post`
+--
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`id_post`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `post`
+--
+ALTER TABLE `post`
+  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

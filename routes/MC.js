@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 const multer = require("multer");
-const models = require("../models")
+const models = require("../models");
 const jwt = require("jsonwebtoken");
 const midtransClient = require('midtrans-client');
 
