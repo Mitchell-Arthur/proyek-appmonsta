@@ -77,6 +77,23 @@ async function update_profile(username, password, profile_picture, email){
     return user;
   }
 }
+
+async function upgrade_user(email){
+  const conn = await getConnection();
+  var query =  `select * from user where email = '${email}'`;
+  var result = await executeQuery(conn,query);
+  if(result.length == 0){
+    conn.release();
+    return false;
+  }
+  else{
+    var user = result[0]
+    query = `update user set tipe_user = 2 where email = '${email}'`
+    result = await executeQuery(conn,query);
+    conn.release();
+    return true;
+  }
+}
 //mungkin tidak dipakai
 async function getUser(user_key){
   const conn = await getConnection();
@@ -127,6 +144,7 @@ module.exports = {
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
+  upgrade_user : upgrade_user,
   deleteWishlist: deleteWishlist,
-  insertPost: insertPost
+  insertPost: insertPost,
 }

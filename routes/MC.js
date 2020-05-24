@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const router = express.Router();
 const fs = require('fs');
@@ -5,6 +6,7 @@ const path = require('path');
 const multer = require("multer");
 const models = require("../models");
 const jwt = require("jsonwebtoken");
+const stripe = require('stripe')(process.env.STRIPED_SECRET_KEY);
 const midtransClient = require('midtrans-client');
 
 //SET STORAGE ENGINE
@@ -33,6 +35,10 @@ function checkFileType(file,cb){
     }
 }
 
+async function upgrade_user(email){
+    let result = await models.upgrade_user(email)
+    return result
+}
 router.post('/register',async function(req,res){
     var username = req.body.username;
     var password = req.body.password;
@@ -86,8 +92,11 @@ router.put("/update_profile" , upload,  async function(req,res){
 
 router.put("/upgrade_premium", async function(req,res){
     var credit_card_number = req.body.credit_card_number;
+    var expired_month = req.body.expired_month;
+    var expired_year = req.body.expired_year;
+    var cvc = req.body.cvc;
     const token = req.header("x-auth-token");
-
+    var user = 1;
     if(!token){
         res.status(400).send("Anda harus melakukan login terlebih dahulu.")
     }
@@ -95,13 +104,47 @@ router.put("/upgrade_premium", async function(req,res){
         try{
             user = jwt.verify(token,"lastofkelasB");
         }catch(err){
-            res.status(401).send("Token Invalid harap lakukan login ulang");
+            return res.status(401).send("Token Invalid harap lakukan login ulang");
         }
         if(user.level == 1){
-            res.status(200).send(user.email)
+            stripe.tokens.create(
+                {
+                  card: {
+                    number: credit_card_number,
+                    exp_month: expired_month,
+                    exp_year: expired_year,
+                    cvc: cvc,
+                  },
+                },
+                async function(err, token) {
+                    if(err)console.log(err)
+                    else{
+                        console.log(token)
+                        var biaya = 10000000;
+                        var charge = stripe.charges.create({
+                            amount : biaya,
+                            currency : "idr",
+                            source : token.id
+                        }, async function(err,charge){
+                            if(err && err.type ==="stripeCardError"){
+                                res.status(400).send("Kartu anda telah ditolak")
+                            }
+                            else{
+                                let result = upgrade_user(user.email);
+                                if(result){
+                                    res.status(200).send("Pembayaran telah berhasil dilakukan, anda telah menjadi premium member")
+                                }
+                                else{
+                                    res.status(404).send("user dengan email tersebut tidak ditemukan")
+                                }
+                            }
+                        })
+                    }
+                }
+              );
         }
         else{
-            res.send(400).send("anda sudah terdaftar sebagai premium member")
+            return res.send(400).send("anda sudah terdaftar sebagai premium member")
         }
     }
 });
