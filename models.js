@@ -37,7 +37,7 @@ async function register_user(username, password, email){
       return false;
     }
     else{
-      let query  = `insert into user values('','${username}','${password}','${email}','default.jpg')`;
+      let query  = `insert into user values('','${username}','${password}','${email}',1,'default.jpg')`;
       const result = await executeQuery(conn, query);
       conn.release();
       return result;
@@ -47,34 +47,12 @@ async function register_user(username, password, email){
 //query untuk login
 async function login_user(email, password){
     const conn = await getConnection();
-    var key = "";
-    var kembar = true;
-    for(var i =0;i<10;i++){
-        let angka = Math.floor(Math.random() * 10);
-        key += angka;
-    }
     let query  = `select * from user where email = '${email}' and password = '${password}'`;
     var result = await executeQuery(conn, query);
     if(result.length>0){
-        let query  = `select * from user`;
-        let result = await executeQuery(conn, query);
-          while(kembar == true){
-            kembar = false;
-            result.forEach(element => {
-                if(result.login_key == key){
-                    kembar = true;
-                    key = "";
-                    for(var i =0;i<10;i++){
-                        let angka = Math.floor(Math.random() * 10);
-                        key += angka;
-                    }
-                }
-            });
-        }
-        query = `update user set api_key = '${key}' where email = '${email}'`
-        await executeQuery(conn,query);
+        var user = result[0]
         conn.release()
-        return key;
+        return user;
     }
     else{
         conn.release();

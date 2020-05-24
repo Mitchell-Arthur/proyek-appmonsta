@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2020 at 03:17 PM
+-- Generation Time: May 24, 2020 at 07:48 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.2
 
@@ -35,9 +35,18 @@ CREATE TABLE `user` (
   `api_key` varchar(10) NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL,
-  `email` text NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `tipe_user` int(5) NOT NULL,
   `profile_picture` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`api_key`, `username`, `password`, `email`, `tipe_user`, `profile_picture`) VALUES
+('', 'ike', '123', 'mike.com', 1, 'default.jpg'),
+('', 'mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg');
 
 -- --------------------------------------------------------
 
@@ -50,6 +59,16 @@ CREATE TABLE `whistlist` (
   `app_id` text NOT NULL,
   `api_key` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`email`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

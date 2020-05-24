@@ -5,6 +5,7 @@ const path = require('path')
 const multer = require("multer");
 const models = require("../models")
 const jwt = require("jsonwebtoken");
+const midtransClient = require('midtrans-client');
 
 //SET STORAGE ENGINE
 const storage=multer.diskStorage({
@@ -61,8 +62,8 @@ router.post("/login" ,async function(req,res){
     else{
         const token = jwt.sign({    
             "email":result.email,
-            "level":result.status
-        }   ,"tugas6");
+            "level":result.tipe_user
+        }   ,"lastofkelasB", {expiresIn : '1h'});
         res.status(200).send(token);
     }
 });
@@ -80,6 +81,28 @@ router.put("/update_profile" , upload,  async function(req,res){
     }
     else{
         res.status(404).send("user dengan email tersebut tidak ditemukan")
+    }
+});
+
+router.put("/upgrade_premium", async function(req,res){
+    var credit_card_number = req.body.credit_card_number;
+    const token = req.header("x-auth-token");
+
+    if(!token){
+        res.status(400).send("Anda harus melakukan login terlebih dahulu.")
+    }
+    else{
+        try{
+            user = jwt.verify(token,"lastofkelasB");
+        }catch(err){
+            res.status(401).send("Token Invalid harap lakukan login ulang");
+        }
+        if(user.level == 1){
+            res.status(200).send(user.email)
+        }
+        else{
+            res.send(400).send("anda sudah terdaftar sebagai premium member")
+        }
     }
 });
 
