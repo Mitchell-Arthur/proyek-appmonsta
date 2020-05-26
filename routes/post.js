@@ -37,27 +37,40 @@ function checkFileType(file,cb){
 
 //add post
 router.post('/add',async function(req,res){
-    const token = req.header("x-auth-token");
+    let token = req.header('x-auth-token');
     let msg = "";
     let status = "";
     let data = [];
     let output = [];
     let user_logon = {};
     if(!token){
-        res.status(401).send("Token not found");
+        status = "Gagal Post";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
     }
     try{
         user_logon = jwt.verify(token,"lastofkelasB");
     }catch(err){
         //401 not authorized
-        res.status(401).send("Token Invalid");
+        status = "Gagal Post";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
     }
 
     if(user_logon.level == 2){
         let app_id = req.body.app_id;
         let judul = req.body.judul;
         let caption = req.body.caption;
-        console.log(req.body);
         if(app_id == "" || judul == "" || caption == ""){
             status = "Gagal Post";
             msg = "Pastikan semua field terisi!";
@@ -83,6 +96,7 @@ router.post('/add',async function(req,res){
                     });
                     res.status(400).send(output);
                 }else{
+                    let updateLast = await models.updateLast(user_logon.email, req.body.judul, req.body.caption, req.body.app_id);
                     status = "Berhasil Post";
                     data = await models.getLastPost();
                     output.push({
@@ -104,6 +118,16 @@ router.post('/add',async function(req,res){
         });
         res.status(400).send(output);
     }
+});
+
+//view post
+router.get('/view',async function(req,res){
+    let search = req.params.search;
+    let id_app = req.params.id_app;
+    let date = req.params.date;
+
+    let result = await models.getPost();
+    return res.status(200).send(result);
 });
 
 

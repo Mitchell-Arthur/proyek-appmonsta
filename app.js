@@ -111,6 +111,15 @@ app.delete('/lob/api/removeWishlist', async function(req, res) {
 app.use("/api/mitchell", mitchell);
 app.use("/api/post",post);
 
+//EJS MING
+app.get('/demo/post/:token', async function(req, res) {
+  const data = {
+    "token" : req.params.token
+  }
+  console.log(data);
+  res.render("app/post",{data:data});
+});
+
 app.listen(port, () => {
   console.log(`listening port ${port}`);
 });
