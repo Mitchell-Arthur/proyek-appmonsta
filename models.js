@@ -127,8 +127,20 @@ async function deleteWishlist(email, app_id){
 //MING - Add post
 async function insertPost(email, judul_post, caption_post, app_id){
   const conn = await getConnection();
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time;
+  const result = await executeQuery(conn, `INSERT INTO post VALUES ('','${email}',0,0,'${dateTime}','${judul_post}','${caption_post}','none','${app_id}')`);
+  conn.release();
+  return result;
+}
+
+async function updateLast(email, judul_post, caption_post, app_id){
+  const conn = await getConnection();
   const tgl_now = new Date();
-  const result = await executeQuery(conn, `INSERT INTO post VALUES ('','${email}',0,0,'${tgl_now}','${judul_post}','${caption_post}','none','${app_id}')`);
+  const lastPost = await executeQuery(conn, `SELECT MAX(id_post) as id_post FROM post`);
+  const result = await executeQuery(conn, `UPDATE post SET email='${email}', judul_post='${judul_post}', caption_post='${caption_post}', app_id='${app_id}' WHERE id_post=${lastPost[0].id_post}`);
   conn.release();
   return result;
 }
@@ -178,5 +190,6 @@ module.exports = {
   insertLastPostIMG: insertLastPostIMG,
   getLastPost: getLastPost,
   getPost: getPost,
-  deleteLastPost: deleteLastPost
+  deleteLastPost: deleteLastPost,
+  updateLast: updateLast
 }
