@@ -44,27 +44,18 @@ router.post('/register',async function(req,res){
     var password = req.body.password;
     var email = req.body.email;
     
-    if(username == ""|| password == "" || email == ""){
-        res.status(400).send("ada field yang tidak diisi");
-    }
-    else{
-        let result = await models.register_user(username, password, email);
-        if(!result){
-            res.status(400).send("register gagal email pernah diguakan")
-        }
-        else{
-            res.status(400).send("register berhasil")
-        }
-    }
+    if(username == ""|| password == "" || email == "") res.status(400).send("ada field yang tidak diisi");
+    let result = await models.register_user(username, password, email);
+    if(!result) res.status(400).send("register gagal email pernah digunakan")
+    else res.status(400).send("register berhasil")
 });
 
 router.post("/login" ,async function(req,res){
     var email = req.body.email;
     var password = req.body.password;
+
     let result = await models.login_user(email, password);
-    if(!result){
-        res.status(400).send("Login gagal user tidak ditemukan")
-    }
+    if(!result) res.status(400).send("Login gagal user tidak ditemukan")
     else{
         const token = jwt.sign({    
             "email":result.email,
@@ -78,15 +69,18 @@ router.put("/update_profile" , upload,  async function(req,res){
     var username  = req.body.username;
     var password = req.body.password;
     var profile_picture = req.file;
-    var email = req.body.email;
-    console.log(req.file)
-
-    let result = await models.update_profile(username, password, email + path.extname(req.file.originalname).toLowerCase(), email)
-    if(result){
-        res.status(200).send("Profile berhasil di update")
-    }
+    const token = req.header("x-auth-token");
+    var user = 1;
+    if(!token) res.status(400).send("Anda harus melakukan login terlebih dahulu.")
     else{
-        res.status(404).send("user dengan email tersebut tidak ditemukan")
+        try{
+            user = jwt.verify(token,"lastofkelasB");
+        }catch(err){
+            return res.status(401).send("Token Invalid harap lakukan login ulang");
+        }
+        let result = await models.update_profile(username, password, user.email + path.extname(req.file.originalname).toLowerCase(), user.email)
+        if(result)res.status(200).send("Profile berhasil di update")
+        else res.status(404).send("user dengan email tersebut tidak ditemukan")
     }
 });
 
@@ -97,9 +91,7 @@ router.put("/upgrade_premium", async function(req,res){
     var cvc = req.body.cvc;
     const token = req.header("x-auth-token");
     var user = 1;
-    if(!token){
-        res.status(400).send("Anda harus melakukan login terlebih dahulu.")
-    }
+    if(!token) res.status(400).send("Anda harus melakukan login terlebih dahulu.")
     else{
         try{
             user = jwt.verify(token,"lastofkelasB");
@@ -117,7 +109,7 @@ router.put("/upgrade_premium", async function(req,res){
                   },
                 },
                 async function(err, token) {
-                    if(err)console.log(err)
+                    if(err)res.status(400).send(err)
                     else{
                         console.log(token)
                         var biaya = 10000000;
@@ -131,12 +123,8 @@ router.put("/upgrade_premium", async function(req,res){
                             }
                             else{
                                 let result = upgrade_user(user.email);
-                                if(result){
-                                    res.status(200).send("Pembayaran telah berhasil dilakukan, anda telah menjadi premium member")
-                                }
-                                else{
-                                    res.status(404).send("user dengan email tersebut tidak ditemukan")
-                                }
+                                if(result) res.status(200).send("Pembayaran telah berhasil dilakukan, anda telah menjadi premium member")
+                                else res.status(404).send("user dengan email tersebut tidak ditemukan")
                             }
                         })
                     }
