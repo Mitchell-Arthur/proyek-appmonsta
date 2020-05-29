@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const request = require('request');
 const models = require("../models");
+const jwt = require("jsonwebtoken");
 
 require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
-// get all app detail # tidak terpakai
+// get all app id # tidak terpakai
 router.get('/getAllID', async function(req, res) {
   const allID = await new Promise(function(resolve, reject) {
     var options = {
@@ -45,7 +46,7 @@ router.get('/getAllAppDetail', async function(req, res) {
 });
 
 // get app detail
-router.get('/getAppDetail/', async function(req, res) {
+router.get('/app', async function(req, res) {
   const ID = req.query.app_id;
   const data = await new Promise(function(resolve, reject) {
     var options = {
@@ -60,6 +61,22 @@ router.get('/getAppDetail/', async function(req, res) {
       else resolve(JSON.parse(response.body));
     });
   });
+
+  //catat history untuk recommendation
+  const token = req.header("x-auth-token");
+  if (token){
+    let user = {}
+    try { 
+      user = jwt.verify(token, "lastofkelasB"); 
+      const email = user.email;
+      for (let i = 0; i < data.genres.length; i++) {
+        const genre = data.genres[i];
+        const historyCheck = await models.getHistory(email, genre);
+        if (historyCheck.length == 0) await models.insertHistory(email, genre);
+        else await models.updateHistory(email, genre, historyCheck[0].jumlah_akses + 1);
+      }
+    } catch (err) { console.log("Token Invalid"); console.log(err); } 
+  }
   res.json(data);
 });
 
