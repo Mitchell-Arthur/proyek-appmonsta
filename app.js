@@ -112,11 +112,9 @@ app.use("/api/mitchell", mitchell);
 app.use("/api/post",post);
 
 //EJS MING
-app.get('/demo/post/:token', async function(req, res) {
-  const data = {
-    "token" : req.params.token
-  }
-  console.log(data);
+app.get('/demo/post/', async function(req, res) {
+  
+
   res.render("app/post",{data:data});
 });
 
