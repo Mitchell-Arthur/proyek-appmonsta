@@ -187,6 +187,29 @@ async function deleteWishlist(email, app_id){
   return result;
 }
 
+async function getHistory(email, genre){
+  const conn = await getConnection();
+  let query = `SELECT * FROM history WHERE email = '${email}'`;
+  if (genre) query += ` AND genre = '${genre}'`;
+  const result = await executeQuery(conn, query);
+  conn.release();
+  return result;
+}
+
+async function insertHistory(email, genre){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO history VALUES ('${email}','${genre}',1)`);
+  conn.release();
+  return result;
+}
+
+async function updateHistory(email, genre, akses){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `UPDATE history SET jumlah_akses = ${akses} WHERE email = '${email}' AND genre = '${genre}'`);
+  conn.release();
+  return result;
+}
+
 //MING - Add post
 async function insertPost(email, judul_post, caption_post, app_id){
   const conn = await getConnection();
@@ -244,6 +267,9 @@ module.exports = {
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
+  getHistory: getHistory,
+  insertHistory: insertHistory,
+  updateHistory: updateHistory,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
