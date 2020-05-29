@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Bulan Mei 2020 pada 18.53
--- Versi server: 10.4.6-MariaDB
--- Versi PHP: 7.3.8
+-- Generation Time: May 29, 2020 at 03:29 PM
+-- Server version: 10.4.8-MariaDB
+-- PHP Version: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -27,10 +27,28 @@ USE `appmonsta`;
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `post`
+-- Table structure for table `history`
 --
 
-DROP TABLE IF EXISTS `post`;
+CREATE TABLE `history` (
+  `email` text NOT NULL,
+  `genre` text NOT NULL,
+  `jumlah_akses` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `history`
+--
+
+INSERT INTO `history` (`email`, `genre`, `jumlah_akses`) VALUES
+('mike.com', 'Education', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post`
+--
+
 CREATE TABLE `post` (
   `id_post` int(11) NOT NULL,
   `email` text NOT NULL,
@@ -46,10 +64,9 @@ CREATE TABLE `post` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `username` text NOT NULL,
   `password` text NOT NULL,
@@ -60,21 +77,19 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`username`, `password`, `email`, `tipe_user`, `profile_picture`, `api_hit`) VALUES
 ('ike', '123', 'mike.com', 1, 'default.jpg', 5),
-('mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg', 5),
-('ming', 'ming123', 'ming@gmail.com', 2, '', 5);
+('mik', '321', 'mike@mail.com', 1, 'mike@mail.com.jpg', 5);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `wishlist`
+-- Table structure for table `wishlist`
 --
 
-DROP TABLE IF EXISTS `wishlist`;
 CREATE TABLE `wishlist` (
   `email` text NOT NULL,
   `app_id` text NOT NULL
@@ -85,26 +100,26 @@ CREATE TABLE `wishlist` (
 --
 
 --
--- Indeks untuk tabel `post`
+-- Indexes for table `post`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`id_post`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`email`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `post`
+-- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

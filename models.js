@@ -94,6 +94,8 @@ async function upgrade_user(email){
     return true;
   }
 }
+
+//Mitchell
 //mungkin tidak dipakai
 async function getUser(email){
   const conn = await getConnection();
@@ -120,6 +122,29 @@ async function insertWishlist(email, app_id){
 async function deleteWishlist(email, app_id){
   const conn = await getConnection();
   const result = await executeQuery(conn, `DELETE FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
+  conn.release();
+  return result;
+}
+
+async function getHistory(email, genre){
+  const conn = await getConnection();
+  let query = `SELECT * FROM history WHERE email = '${email}'`;
+  if (genre) query += ` AND genre = '${genre}'`;
+  const result = await executeQuery(conn, query);
+  conn.release();
+  return result;
+}
+
+async function insertHistory(email, genre){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO history VALUES ('${email}','${genre}',1)`);
+  conn.release();
+  return result;
+}
+
+async function updateHistory(email, genre, akses){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `UPDATE history SET jumlah_akses = ${akses} WHERE email = '${email}' AND genre = '${genre}'`);
   conn.release();
   return result;
 }
@@ -181,6 +206,9 @@ module.exports = {
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
+  getHistory: getHistory,
+  insertHistory: insertHistory,
+  updateHistory: updateHistory,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
