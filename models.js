@@ -94,6 +94,69 @@ async function upgrade_user(email){
     return true;
   }
 }
+
+//query untuk membuat voting 
+async function make_vote(judul_vote, email_pembuat){
+  const conn = await getConnection();
+  let query = `insert into list_vote values('','${judul_vote}','${email_pembuat}')`
+  let result = await executeQuery(conn, query)
+  conn.release();
+  return result;
+}
+
+async function insert_vote(data, id_list_vote, indeks_pilihan_vote){
+  const conn = await getConnection();
+  var nama_app = data.app_name;
+  var id_app = data.bundle_id;
+  var publisher_name = data.publisher_name;
+  var app_type = data.app_type;
+  var genre = data.genre;
+
+  let query = `insert into vote values('${id_list_vote}','${indeks_pilihan_vote}','${id_app}','${nama_app}','${publisher_name}','${app_type}','${genre}',0)`
+  let result = await executeQuery(conn, query)
+
+  conn.release();
+  return result;
+}
+
+//query ketika user melakukan vote
+async function input_vote(email_voter, id_list_vote, indeks_pilihan_vote){
+  const conn = await getConnection();
+  let query = `select * from history_vote where email_voter = '${email_voter}' AND id_list_vote = '${id_list_vote}'`
+  let result = await executeQuery(conn, query)
+
+  if(result.length >= 1){
+    conn.release();
+    return false;
+  }
+
+  query = `insert into history_vote values('${email_voter}','${id_list_vote}','${indeks_pilihan_vote}')`
+  await executeQuery(conn, query)
+
+  
+  query = `select * from vote where id_list_vote = ${id_list_vote} and indeks_pilihan_vote = ${indeks_pilihan_vote}`
+  vote = await executeQuery(conn, query)
+
+  query = `update vote set jumlah_vote = ${vote[0].Jumlah_vote + 1} where id_list_vote = '${id_list_vote}' and indeks_pilihan_vote = '${indeks_pilihan_vote}'`
+  await executeQuery(conn, query)
+  conn.release();
+  return true;
+}
+
+//get ranking
+async function get_ranking_vote(id_list_vote){
+  const conn = await getConnection();
+  let query = `select * from vote where id_list_vote = '${id_list_vote}' order by Jumlah_vote DESC`
+  let result = await executeQuery(conn, query)
+
+  if(result.length == 0){
+    conn.release();s
+    return false
+  }
+  conn.release();
+  console.log(result)
+  return result;
+}
 //mungkin tidak dipakai
 async function getUser(email){
   const conn = await getConnection();
@@ -185,6 +248,10 @@ module.exports = {
   register_user : register_user,
   update_profile : update_profile,
   upgrade_user : upgrade_user,
+  make_vote : make_vote,
+  insert_vote : insert_vote,
+  input_vote : input_vote,
+  get_ranking_vote : get_ranking_vote,
   deleteWishlist: deleteWishlist,
   insertPost: insertPost,
   insertLastPostIMG: insertLastPostIMG,
