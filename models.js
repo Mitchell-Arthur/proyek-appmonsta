@@ -283,6 +283,32 @@ async function updatePost(id_post, judul, caption){
   return result;
 }
 
+async function reviewPost(id_post, comment){
+  const conn = await getConnection();
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time;
+  const result = await executeQuery(conn, `INSERT INTO review_post values('',${id_post},'${comment}','${dateTime}')`);
+  conn.release();
+  return result;
+}
+
+async function getLastReview(){
+  const conn = await getConnection();
+  const lastReview = await executeQuery(conn, `SELECT MAX(id_review) as id_review FROM review_post`);
+  const result = await executeQuery(conn, `SELECT * FROM review_post WHERE id_review = ${lastReview[0].id_review}`);
+  conn.release();
+  return result;
+}
+
+async function getPostByEmail(email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM post WHERE email = '${email}'`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
@@ -308,5 +334,8 @@ module.exports = {
   updateLast: updateLast,
   getPostByID: getPostByID,
   deletePostByID: deletePostByID,
-  updatePost: updatePost
+  updatePost: updatePost,
+  reviewPost: reviewPost,
+  getLastReview: getLastReview,
+  getPostByEmail: getPostByEmail
 }
