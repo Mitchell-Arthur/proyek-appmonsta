@@ -130,5 +130,187 @@ router.get('/view',async function(req,res){
     return res.status(200).send(result);
 });
 
+//delete post
+router.delete('/delete',async function(req,res){
+    let token = req.header('x-auth-token');
+    let msg = "";
+    let status = "";
+    let data = [];
+    let output = [];
+    let user_logon = {};
+    if(!token){
+        status = "Gagal Delete";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+    try{
+        user_logon = jwt.verify(token,"lastofkelasB");
+    }catch(err){
+        //401 not authorized
+        status = "Gagal Delete";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(400).send(output);
+    }
+
+    if(user_logon.level == 2){
+        let id_post = req.body.id_post;
+        if(id_post == ""){
+            status = "Gagal Delete";
+            msg = "Pastikan semua field terisi!";
+            output.push({
+                "status" : status,
+                "error" : msg,
+                "data" : data
+            });
+            res.status(400).send(output);
+        }else{
+            selected_post = await models.getPostByID(id_post);
+            if(selected_post.length > 0){
+                if(user_logon.email == selected_post[0].email){
+                    let deletePost = await models.deletePostByID(id_post);
+    
+                    status = "Berhasil Delete";
+                    msg = "";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(200).send(output);
+                }else{
+                    status = "Gagal Delete";
+                    msg = "User tidak memiliki hak akses pada post!";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(400).send(output);
+                }
+            }else{
+                status = "Gagal Delete";
+                msg = "ID Post tidak ditemukan!";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(401).send(output);
+            }
+            
+        }
+    }else{
+        status = "Gagal Delete";
+        msg = "Jenis user tidak memiliki hak akses";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : data
+        });
+        res.status(400).send(output);
+    }
+});
+
+//add post
+router.put('/edit',async function(req,res){
+    let token = req.header('x-auth-token');
+    let msg = "";
+    let status = "";
+    let data = [];
+    let output = [];
+    let user_logon = {};
+    if(!token){
+        status = "Gagal Update";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+    try{
+        user_logon = jwt.verify(token,"lastofkelasB");
+    }catch(err){
+        //401 not authorized
+        status = "Gagal Update";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+
+    if(user_logon.level == 2){
+        let judul = req.body.judul;
+        let caption = req.body.caption;
+        let id_post = req.body.id_post;
+        if(judul == undefined || caption == undefined || id_post == undefined){
+            status = "Gagal Update";
+            msg = "Pastikan semua field terisi!";
+            output.push({
+                "status" : status,
+                "error" : msg,
+                "data" : data
+            });
+            res.status(400).send(output);
+        }else{
+            selected_post = await models.getPostByID(id_post);
+            if(selected_post.length > 0){
+                if(user_logon.email == selected_post[0].email){
+                    let updatePost = await models.updatePost(id_post, judul, caption);
+                    data = await models.getPostByID(id_post);
+                    status = "Berhasil Update";
+                    msg = "";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(200).send(output);
+                }else{
+                    status = "Gagal Update";
+                    msg = "User tidak memiliki hak akses pada post!";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(400).send(output);
+                }
+            }else{
+                status = "Gagal Update";
+                msg = "ID Post tidak ditemukan!";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(401).send(output);
+            }
+        }
+    }else{
+        status = "Gagal Update";
+        msg = "Jenis user tidak memiliki hak akses";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : data
+        });
+        res.status(400).send(output);
+    }
+});
 
 module.exports = router;

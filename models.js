@@ -201,6 +201,27 @@ async function getPost(){
   return result;
 }
 
+async function getPostByID(id_post){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM post WHERE id_post = ${id_post}`);
+  conn.release();
+  return result;
+}
+
+async function deletePostByID(id_post){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM post WHERE id_post = ${id_post}`);
+  conn.release();
+  return result;
+}
+
+async function updatePost(id_post, judul, caption){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `UPDATE post SET judul_post='${judul}', caption_post='${caption}' WHERE id_post = ${id_post}`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
@@ -219,5 +240,8 @@ module.exports = {
   getLastPost: getLastPost,
   getPost: getPost,
   deleteLastPost: deleteLastPost,
-  updateLast: updateLast
+  updateLast: updateLast,
+  getPostByID: getPostByID,
+  deletePostByID: deletePostByID,
+  updatePost: updatePost
 }
