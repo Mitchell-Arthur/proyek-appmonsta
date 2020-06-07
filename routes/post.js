@@ -126,7 +126,7 @@ router.get('/view',async function(req,res){
     let id_app = req.params.id_app;
     let date = req.params.date;
 
-    let result = await models.getPost();
+    let result = await models.getPost(search, id_app);
     return res.status(200).send(result);
 });
 
@@ -161,7 +161,7 @@ router.delete('/delete',async function(req,res){
         });
         res.status(400).send(output);
     }
-
+    console.log(token);
     if(user_logon.level == 2){
         let id_post = req.body.id_post;
         if(id_post == ""){
@@ -369,7 +369,7 @@ router.post('/comment',async function(req,res){
                     "error" : msg,
                     "data" : data
                 });
-                res.status(401).send(output);
+                res.status(200).send(output);
             }else{
                 status = "Gagal Comment";
                 msg = "ID Post tidak ditemukan!";
@@ -394,7 +394,7 @@ router.post('/comment',async function(req,res){
 });
 
 //mypost
-router.post('/mypost',async function(req,res){
+router.get('/mypost',async function(req,res){
     let token = req.header('x-auth-token');
     let msg = "";
     let status = "";
@@ -458,5 +458,278 @@ router.post('/mypost',async function(req,res){
         res.status(400).send(output);
     }
 });
+
+//get review post
+router.get('/get_review',async function(req,res){
+    let token = req.header('x-auth-token');
+    let msg = "";
+    let status = "";
+    let data = [];
+    let output = [];
+    let user_logon = {};
+    if(!token){
+        status = "Gagal MyPost";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+    try{
+        user_logon = jwt.verify(token,"lastofkelasB");
+    }catch(err){
+        //401 not authorized
+        status = "Gagal MyPost";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+
+    if(user_logon.level == 2){
+        let id_post = req.body.id_post;
+        let selected_post = await models.getPostByID(id_post);
+        if(selected_post.length > 0){
+            let all_review = await models.getReviewByID(id_post);
+            if(all_review.length > 0){
+                data = all_review;
+                status = "Berhasil Get Review";
+                msg = "";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(200).send(output);
+            }else{
+                status = "Gagal Get Review";
+                msg = "Post tidak memiliki review";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(400).send(output);
+            }
+        }else{
+            status = "Gagal Get Review";
+            msg = "Id Post tidak ditemukan";
+            output.push({
+                "status" : status,
+                "error" : msg,
+                "data" : data
+            });
+            res.status(400).send(output);
+        }
+    }else{
+        status = "Gagal Get Review";
+        msg = "Jenis user tidak memiliki hak akses";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : data
+        });
+        res.status(400).send(output);
+    }
+});
+
+//like post
+router.post('/like',async function(req,res){
+    let token = req.header('x-auth-token');
+    let msg = "";
+    let status = "";
+    let data = [];
+    let output = [];
+    let user_logon = {};
+    if(!token){
+        status = "Gagal Like";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+    try{
+        user_logon = jwt.verify(token,"lastofkelasB");
+    }catch(err){
+        //401 not authorized
+        status = "Gagal Like";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+
+    if(user_logon.level == 2){
+        let id_post = req.body.id_post;
+        let email = user_logon.email;
+        if(id_post == undefined){
+            status = "Gagal Like";
+            msg = "Pastikan semua field terisi!";
+            output.push({
+                "status" : status,
+                "error" : msg,
+                "data" : data
+            });
+            res.status(400).send(output);
+        }else{
+            selected_post = await models.getPostByID(id_post);
+            if(selected_post.length > 0){
+                already_like = await models.getLikedPost(id_post,email);
+                if(already_like.length > 0){
+                    status = "Gagal Like";
+                    msg = "User sudah melakukan like pada post!";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(400).send(output);
+                }else{
+                    already_dislike = await models.getDislikedPost(id_post,email);
+                    if(already_dislike.length > 0){
+                        runDeleteDislike = await models.deleteDislikedPost(id_post,email);
+                    }
+
+                    runInsertLike = await models.insertLikedPost(id_post,email);
+                    status = "Berhasil like post";
+                    msg = "";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(200).send(output);
+                }
+            }else{
+                status = "Gagal Like";
+                msg = "ID Post tidak ditemukan!";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(401).send(output);
+            }
+        }
+    }else{
+        status = "Gagal Like";
+        msg = "Jenis user tidak memiliki hak akses";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : data
+        });
+        res.status(400).send(output);
+    }
+});
+
+//dislike post
+router.post('/dislike',async function(req,res){
+    let token = req.header('x-auth-token');
+    let msg = "";
+    let status = "";
+    let data = [];
+    let output = [];
+    let user_logon = {};
+    if(!token){
+        status = "Gagal Dislike";
+        msg = "Token not found!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+    try{
+        user_logon = jwt.verify(token,"lastofkelasB");
+    }catch(err){
+        //401 not authorized
+        status = "Gagal Dislike";
+        msg = "Invalid token!";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : ""
+        });
+        res.status(401).send(output);
+    }
+
+    if(user_logon.level == 2){
+        let id_post = req.body.id_post;
+        let email = user_logon.email;
+        if(id_post == undefined){
+            status = "Gagal Dislike";
+            msg = "Pastikan semua field terisi!";
+            output.push({
+                "status" : status,
+                "error" : msg,
+                "data" : data
+            });
+            res.status(400).send(output);
+        }else{
+            selected_post = await models.getPostByID(id_post);
+            if(selected_post.length > 0){
+                already_dislike = await models.getDislikedPost(id_post,email);
+                if(already_dislike.length > 0){
+                    status = "Gagal Like";
+                    msg = "User sudah melakukan dislike pada post!";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(400).send(output);
+                }else{
+                    already_like = await models.getLikedPost(id_post,email);
+                    console.log(already_like);
+                    if(already_like.length > 0){
+                        runDeleteLike = await models.deleteLikedPost(id_post,email);
+                    }
+
+                    runInsertDislike = await models.insertDislikePost(id_post,email);
+                    status = "Berhasil dislike post";
+                    msg = "";
+                    output.push({
+                        "status" : status,
+                        "error" : msg,
+                        "data" : data
+                    });
+                    res.status(200).send(output);
+                }
+            }else{
+                status = "Gagal Dislike";
+                msg = "ID Post tidak ditemukan!";
+                output.push({
+                    "status" : status,
+                    "error" : msg,
+                    "data" : data
+                });
+                res.status(401).send(output);
+            }
+        }
+    }else{
+        status = "Gagal Dislike";
+        msg = "Jenis user tidak memiliki hak akses";
+        output.push({
+            "status" : status,
+            "error" : msg,
+            "data" : data
+        });
+        res.status(400).send(output);
+    }
+});
+
 
 module.exports = router;

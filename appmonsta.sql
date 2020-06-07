@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Bulan Mei 2020 pada 11.09
--- Versi server: 10.4.6-MariaDB
--- Versi PHP: 7.3.8
+-- Generation Time: Jun 07, 2020 at 03:57 PM
+-- Server version: 10.1.35-MariaDB
+-- PHP Version: 7.2.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -27,18 +27,32 @@ USE `appmonsta`;
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `history_vote`
+-- Table structure for table `dislike_post`
+--
+
+DROP TABLE IF EXISTS `dislike_post`;
+CREATE TABLE IF NOT EXISTS `dislike_post` (
+  `id_dislike` int(11) NOT NULL AUTO_INCREMENT,
+  `id_post` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_dislike`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `history_vote`
 --
 
 DROP TABLE IF EXISTS `history_vote`;
-CREATE TABLE `history_vote` (
+CREATE TABLE IF NOT EXISTS `history_vote` (
   `email_voter` varchar(50) NOT NULL,
   `id_list_vote` int(10) NOT NULL,
   `indeks_pilihan_vote` int(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `history_vote`
+-- Dumping data for table `history_vote`
 --
 
 INSERT INTO `history_vote` (`email_voter`, `id_list_vote`, `indeks_pilihan_vote`) VALUES
@@ -47,18 +61,49 @@ INSERT INTO `history_vote` (`email_voter`, `id_list_vote`, `indeks_pilihan_vote`
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `list_vote`
+-- Table structure for table `like_post`
+--
+
+DROP TABLE IF EXISTS `like_post`;
+CREATE TABLE IF NOT EXISTS `like_post` (
+  `id_like` int(11) NOT NULL AUTO_INCREMENT,
+  `id_post` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_like`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `like_rating`
+--
+
+DROP TABLE IF EXISTS `like_rating`;
+CREATE TABLE IF NOT EXISTS `like_rating` (
+  `likeID` int(11) NOT NULL AUTO_INCREMENT,
+  `ratingID` int(11) NOT NULL,
+  `like_indicator` tinyint(1) NOT NULL,
+  `comment` text NOT NULL,
+  `email` text NOT NULL,
+  PRIMARY KEY (`likeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `list_vote`
 --
 
 DROP TABLE IF EXISTS `list_vote`;
-CREATE TABLE `list_vote` (
-  `id_list_vote` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `list_vote` (
+  `id_list_vote` int(11) NOT NULL AUTO_INCREMENT,
   `judul_vote` varchar(255) NOT NULL,
-  `email_pembuat` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `email_pembuat` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_list_vote`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `list_vote`
+-- Dumping data for table `list_vote`
 --
 
 INSERT INTO `list_vote` (`id_list_vote`, `judul_vote`, `email_pembuat`) VALUES
@@ -68,24 +113,25 @@ INSERT INTO `list_vote` (`id_list_vote`, `judul_vote`, `email_pembuat`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `post`
+-- Table structure for table `post`
 --
 
 DROP TABLE IF EXISTS `post`;
-CREATE TABLE `post` (
-  `id_post` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `post` (
+  `id_post` int(11) NOT NULL AUTO_INCREMENT,
   `email` text NOT NULL,
   `total_up` int(11) DEFAULT NULL,
   `total_down` int(11) DEFAULT NULL,
   `tgl_post` date NOT NULL,
   `judul_post` varchar(50) NOT NULL,
   `caption_post` varchar(255) DEFAULT NULL,
-  `img_path` text DEFAULT NULL,
-  `app_id` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `img_path` text,
+  `app_id` text,
+  PRIMARY KEY (`id_post`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `post`
+-- Dumping data for table `post`
 --
 
 INSERT INTO `post` (`id_post`, `email`, `total_up`, `total_down`, `tgl_post`, `judul_post`, `caption_post`, `img_path`, `app_id`) VALUES
@@ -94,19 +140,38 @@ INSERT INTO `post` (`id_post`, `email`, `total_up`, `total_down`, `tgl_post`, `j
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `review_post`
+-- Table structure for table `rating`
+--
+
+DROP TABLE IF EXISTS `rating`;
+CREATE TABLE IF NOT EXISTS `rating` (
+  `ratingID` int(11) NOT NULL AUTO_INCREMENT,
+  `appID` text NOT NULL,
+  `rating` int(2) NOT NULL,
+  `comment` text NOT NULL,
+  `rating_date` date NOT NULL,
+  `username` text NOT NULL,
+  `email` text NOT NULL,
+  PRIMARY KEY (`ratingID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_post`
 --
 
 DROP TABLE IF EXISTS `review_post`;
-CREATE TABLE `review_post` (
-  `id_review` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `review_post` (
+  `id_review` int(11) NOT NULL AUTO_INCREMENT,
   `id_post` int(11) DEFAULT NULL,
   `comment` varchar(1000) NOT NULL,
-  `tgl_review` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `tgl_review` date NOT NULL,
+  PRIMARY KEY (`id_review`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `review_post`
+-- Dumping data for table `review_post`
 --
 
 INSERT INTO `review_post` (`id_review`, `id_post`, `comment`, `tgl_review`) VALUES
@@ -115,21 +180,22 @@ INSERT INTO `review_post` (`id_review`, `id_post`, `comment`, `tgl_review`) VALU
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `username` text NOT NULL,
   `password` text NOT NULL,
   `email` varchar(50) NOT NULL,
   `tipe_user` int(5) NOT NULL,
   `profile_picture` varchar(50) NOT NULL,
-  `api_hit` int(11) NOT NULL
+  `api_hit` int(11) NOT NULL,
+  PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`username`, `password`, `email`, `tipe_user`, `profile_picture`, `api_hit`) VALUES
@@ -142,11 +208,11 @@ INSERT INTO `user` (`username`, `password`, `email`, `tipe_user`, `profile_pictu
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `vote`
+-- Table structure for table `vote`
 --
 
 DROP TABLE IF EXISTS `vote`;
-CREATE TABLE `vote` (
+CREATE TABLE IF NOT EXISTS `vote` (
   `id_list_vote` int(5) NOT NULL,
   `indeks_pilihan_vote` int(10) NOT NULL,
   `id_app` varchar(50) NOT NULL,
@@ -158,7 +224,7 @@ CREATE TABLE `vote` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `vote`
+-- Dumping data for table `vote`
 --
 
 INSERT INTO `vote` (`id_list_vote`, `indeks_pilihan_vote`, `id_app`, `nama_app`, `publisher_name`, `app_type`, `genre`, `Jumlah_vote`) VALUES
@@ -170,64 +236,14 @@ INSERT INTO `vote` (`id_list_vote`, `indeks_pilihan_vote`, `id_app`, `nama_app`,
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `wishlist`
+-- Table structure for table `wishlist`
 --
 
 DROP TABLE IF EXISTS `wishlist`;
-CREATE TABLE `wishlist` (
+CREATE TABLE IF NOT EXISTS `wishlist` (
   `email` text NOT NULL,
   `app_id` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Indexes for dumped tables
---
-
---
--- Indeks untuk tabel `list_vote`
---
-ALTER TABLE `list_vote`
-  ADD PRIMARY KEY (`id_list_vote`);
-
---
--- Indeks untuk tabel `post`
---
-ALTER TABLE `post`
-  ADD PRIMARY KEY (`id_post`);
-
---
--- Indeks untuk tabel `review_post`
---
-ALTER TABLE `review_post`
-  ADD PRIMARY KEY (`id_review`);
-
---
--- Indeks untuk tabel `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`email`);
-
---
--- AUTO_INCREMENT untuk tabel yang dibuang
---
-
---
--- AUTO_INCREMENT untuk tabel `list_vote`
---
-ALTER TABLE `list_vote`
-  MODIFY `id_list_vote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
-
---
--- AUTO_INCREMENT untuk tabel `post`
---
-ALTER TABLE `post`
-  MODIFY `id_post` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
-
---
--- AUTO_INCREMENT untuk tabel `review_post`
---
-ALTER TABLE `review_post`
-  MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

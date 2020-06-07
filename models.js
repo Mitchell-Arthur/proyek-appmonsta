@@ -4,9 +4,9 @@ require('dotenv').config();
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER, //root
-  password: process.env.DB_PASS, //~}+~6h$wmjpxOUc=
+  password: process.env.DB_PASS, //NED}59(\d0u6jg+
   port: process.env.DB_PORT,
-  database: process.env.DB_NAME //lob_proyek_soa
+  database: process.env.DB_NAME //id13920581_lob_proyek_soa
 });
 
 function getConnection() {
@@ -158,18 +158,12 @@ async function get_ranking_vote(id_list_vote){
 }
 
 //Mitchell
-//mungkin tidak dipakai
-async function getUser(email){
-  const conn = await getConnection();
-  let query = `SELECT * FROM user WHERE email ='${email}'`;
-  const result = await executeQuery(conn, query);
-  conn.release();
-  return result;
-}
 
 async function getWishlist(email, app_id){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT * FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
+  var query = `SELECT app_id FROM wishlist WHERE email ='${email}'`;
+  if (app_id) query += ` AND app_id = '${app_id}'`
+  const result = await executeQuery(conn, query);
   conn.release();
   return result;
 }
@@ -184,30 +178,6 @@ async function insertWishlist(email, app_id){
 async function deleteWishlist(email, app_id){
   const conn = await getConnection();
   const result = await executeQuery(conn, `DELETE FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
-  conn.release();
-  return result;
-}
-
-async function getHistory(email, genre){
-  const conn = await getConnection();
-  let query = `SELECT * FROM history WHERE email = '${email}'`;
-  if (genre) query += ` AND genre = '${genre}'`;
-  query += ` ORDER BY jumlah_akses DESC`;
-  const result = await executeQuery(conn, query);
-  conn.release();
-  return result;
-}
-
-async function insertHistory(email, genre){
-  const conn = await getConnection();
-  const result = await executeQuery(conn, `INSERT INTO history VALUES ('${email}','${genre}',1)`);
-  conn.release();
-  return result;
-}
-
-async function updateHistory(email, genre, akses){
-  const conn = await getConnection();
-  const result = await executeQuery(conn, `UPDATE history SET jumlah_akses = ${akses} WHERE email = '${email}' AND genre = '${genre}'`);
   conn.release();
   return result;
 }
@@ -257,9 +227,9 @@ async function deleteLastPost(){
   return result;
 }
 
-async function getPost(){
+async function getPost(search, id_app){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT * FROM post`);
+  const result = await executeQuery(conn, `SELECT * FROM post WHERE judul_post LIKE '%${search}%' AND app_id='${id_app}'`);
   conn.release();
   return result;
 }
@@ -311,14 +281,121 @@ async function getPostByEmail(email){
   return result;
 }
 
+async function getReviewByID(id_post){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM review_post WHERE id_post = '${id_post}'`);
+  conn.release();
+  return result;
+}
+
+async function getLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM like_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function getDislikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM dislike_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function deleteLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM like_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function deleteDislikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM dislike_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function insertLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO like_post VALUES('','${id_post}','${email}')`);
+  conn.release();
+  return result;
+}
+
+async function insertDislikePost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO dislike_post VALUES('','${id_post}','${email}')`);
+  conn.release();
+  return result;
+}
+
+//NESTOR
+async function getRatingByApp(appID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT r.appID AS appID, r.ratingID AS ratingID, r.rating AS rating, r.comment AS comment, r.rating_date AS rating_date, r.username AS username, lr.COUNT(likeID) AS like_count FROM rating r, like_rating lr WHERE lr.ratingID = r.ratingID AND appID = '${appID}'`);
+  conn.release();
+  return result;
+}
+
+async function getRatingByID(ratingID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM rating r, like_rating lr WHERE ratingID = ${ratingID} AND r.ratingID = lr.ratingID`);
+  conn.release();
+  return result;
+}
+
+async function insertRating(rating, comment, email){
+  let shownUsername = '';
+  const conn = await getConnection();
+  const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
+  if(userTypeCheck.length<=0){
+    conn.release;
+    return false;
+  }
+  if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = userTypeCheck.username;
+  else snownUsername = "Anonymous";
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time;
+  const result = await executeQuery(conn, `INSERT INTO rating VALUES('','${appID}',${rating},'${comment}','${dateTime}','${shownUsername}', '${email}')`);
+  conn.release;
+  return result;
+}
+
+async function editRating(ratingID, rating, comment){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `UPDATE rating SET rating = '${rating}', comment = '${comment}' WHERE ratingID = ${ratingID}`);
+  conn.release;
+  return result;
+}
+
+async function deleteRatingByID(ratingID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM rating WHERE ratingID = ${ratingID}`);
+  conn.release();
+  return result;
+}
+
+async function insertLikeonRating(ratingID, comment){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO like_rating VALUES('',${ratingID},1,'${comment}')`);
+  conn.release();
+  return result;
+}
+
+async function deleteLikeonRatingbyID(likeID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM like_rating WHERE likeID = ${likeID}`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
-  getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
-  getHistory: getHistory,
-  insertHistory: insertHistory,
-  updateHistory: updateHistory,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
@@ -339,5 +416,19 @@ module.exports = {
   updatePost: updatePost,
   reviewPost: reviewPost,
   getLastReview: getLastReview,
-  getPostByEmail: getPostByEmail
+  getPostByEmail: getPostByEmail,
+  getReviewByID: getReviewByID,
+  getLikedPost: getLikedPost,
+  getDislikedPost: getDislikedPost,
+  deleteDislikedPost: deleteDislikedPost,
+  deleteLikedPost: deleteLikedPost,
+  insertLikedPost: insertLikedPost,
+  insertDislikePost: insertDislikePost,
+  getRatingByApp: getRatingByApp,
+  getRatingByID: getRatingByID,
+  insertRating: insertRating,
+  editRating: editRating,
+  deleteRatingByID: deleteRatingByID,
+  insertLikeonRating: insertLikeonRating,
+  deleteLikeonRatingbyID: deleteLikeonRatingbyID
 }
