@@ -3,10 +3,10 @@ require('dotenv').config();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
+  user: process.env.DB_USER, //root
+  password: process.env.DB_PASS, //~}+~6h$wmjpxOUc=
   port: process.env.DB_PORT,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME //lob_proyek_soa
 });
 
 function getConnection() {
@@ -157,6 +157,8 @@ async function get_ranking_vote(id_list_vote){
   console.log(result)
   return result;
 }
+
+//Mitchell
 //mungkin tidak dipakai
 async function getUser(email){
   const conn = await getConnection();
@@ -191,6 +193,7 @@ async function getHistory(email, genre){
   const conn = await getConnection();
   let query = `SELECT * FROM history WHERE email = '${email}'`;
   if (genre) query += ` AND genre = '${genre}'`;
+  query += ` ORDER BY jumlah_akses DESC`;
   const result = await executeQuery(conn, query);
   conn.release();
   return result;

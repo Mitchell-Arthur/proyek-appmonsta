@@ -19,8 +19,6 @@ const access_key = process.env.ACCESS_KEY;
 const stripe_secret_key = process.env.STRIPED_SECRET_KEY;
 const stripe_public_key = process.env.STRIPED_PUBLIC_KEY;
 
-console.log(stripe_secret_key,stripe_public_key)
-
 app.use("/api/mitchell", mitchell);
 app.use("/api/post",post);
 

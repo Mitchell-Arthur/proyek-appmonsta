@@ -116,7 +116,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.appmonsta.com/v1/stores/android/details.json?date=2020-04-28&country=US",
+					"raw": "https://api.appmonsta.com/v1/stores/android/details.json?date=2020-06-01&country=US",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -132,7 +132,7 @@
 					"query": [
 						{
 							"key": "date",
-							"value": "2020-04-28"
+							"value": "2020-06-01"
 						},
 						{
 							"key": "country",
@@ -144,19 +144,19 @@
 			"response": []
 		},
 		{
-			"name": "- All ID",
+			"name": "Mitchell - All ID",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/lob/api/getAllID",
+					"raw": "localhost:3000/api/mitchell/getAllID",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
+						"mitchell",
 						"getAllID"
 					]
 				}
@@ -164,13 +164,53 @@
 			"response": []
 		},
 		{
-			"name": "- App Detail",
+			"name": "Mitchell - Show App Detail",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3a56b663-a985-4a7f-80f9-b019a3d63210",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "76940c2d-5d69-4be2-9b5b-7dd2bc56aae1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"KTU IF lecture schedule\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response should have publisher name MIK apps\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.publisher_name).to.eql(\"MIK apps\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pa2UuY29tIiwibGV2ZWwiOjEsImlhdCI6MTU5MDY0ODQ3NCwiZXhwIjoxNTkwNjUyMDc0fQ.hkV6lL6QGfnoG_GePY8uWnRbECy44CZExN1dSKSl4XM",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
 					"urlencoded": [
@@ -183,15 +223,15 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:3000/lob/api/getAppDetail?app_id=com.ktucalender",
+					"raw": "localhost:3000/api/mitchell/app?app_id=com.ktucalender",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
-						"getAppDetail"
+						"mitchell",
+						"app"
 					],
 					"query": [
 						{
@@ -204,19 +244,19 @@
 			"response": []
 		},
 		{
-			"name": "- All App Detail",
+			"name": "Mitchell - All App Detail",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/lob/api/getAllAppDetail",
+					"raw": "localhost:3000/api/mitchell/getAllAppDetail",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
+						"mitchell",
 						"getAllAppDetail"
 					]
 				}
@@ -224,7 +264,7 @@
 			"response": []
 		},
 		{
-			"name": "- Status Wishlist",
+			"name": "Mitchell - Show Wishlist",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -235,7 +275,7 @@
 							"if (!data || data.length <= 0) {\r",
 							"    data = [\r",
 							"        {\r",
-							"            \"get_wishlist_user_key\": \"1234567890\",\r",
+							"            \"get_wishlist_user_key\": \"user1\",\r",
 							"            \"get_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"get_wishlist_status_code\": 200,\r",
 							"            \"get_wishlist_body\": {\r",
@@ -243,11 +283,19 @@
 							"            }\r",
 							"        },\r",
 							"        {\r",
-							"            \"get_wishlist_user_key\": \"test\",\r",
+							"            \"get_wishlist_user_key\": \"unknown\",\r",
 							"            \"get_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"get_wishlist_status_code\": 400,\r",
 							"            \"get_wishlist_body\": {\r",
 							"                \"message\": \"User belum terdaftar\"\r",
+							"            }\r",
+							"        },\r",
+							"        {\r",
+							"            \"get_wishlist_user_key\": \"user1\",\r",
+							"            \"get_wishlist_app_id\": \"com.ktucalende\",\r",
+							"            \"get_wishlist_status_code\": 400,\r",
+							"            \"get_wishlist_body\": {\r",
+							"                \"message\": \"Aplikasi tidak ditemukan\"\r",
 							"            }\r",
 							"        }\r",
 							"    ]\r",
@@ -272,7 +320,7 @@
 							"flag = false;\r",
 							"\r",
 							"if (data && data.length > 0) {\r",
-							"    postman.setNextRequest(\"- Status Wishlist\");\r",
+							"    postman.setNextRequest(\"- Get Wishlist\");\r",
 							"} else {\r",
 							"    flag = true;\r",
 							"}\r",
@@ -302,15 +350,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/lob/api/getStatusWishlist?app_id={{get_wishlist_app_id}}&user_key={{get_wishlist_user_key}}",
+					"raw": "localhost:3000/api/mitchell/wishlist?app_id={{get_wishlist_app_id}}&user_key={{get_wishlist_user_key}}",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
-						"getStatusWishlist"
+						"mitchell",
+						"wishlist"
 					],
 					"query": [
 						{
@@ -327,7 +375,7 @@
 			"response": []
 		},
 		{
-			"name": "- Add Wishlist",
+			"name": "Mitchell - Add Wishlist",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -338,7 +386,7 @@
 							"if (!data || data.length <= 0) {\r",
 							"    data = [\r",
 							"        {\r",
-							"            \"post_wishlist_user_key\": \"1234567890\",\r",
+							"            \"post_wishlist_user_key\": \"user1\",\r",
 							"            \"post_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"post_wishlist_status_code\": 200,\r",
 							"            \"post_wishlist_body\": {\r",
@@ -346,11 +394,19 @@
 							"            }\r",
 							"        },\r",
 							"        {\r",
-							"            \"post_wishlist_user_key\": \"test\",\r",
+							"            \"post_wishlist_user_key\": \"unknown\",\r",
 							"            \"post_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"post_wishlist_status_code\": 400,\r",
 							"            \"post_wishlist_body\": {\r",
 							"                \"message\": \"User belum terdaftar\"\r",
+							"            }\r",
+							"        },\r",
+							"        {\r",
+							"            \"post_wishlist_user_key\": \"user1\",\r",
+							"            \"post_wishlist_app_id\": \"com.ktucalende\",\r",
+							"            \"post_wishlist_status_code\": 400,\r",
+							"            \"post_wishlist_body\": {\r",
+							"                \"message\": \"Aplikasi tidak ditemukan\"\r",
 							"            }\r",
 							"        }\r",
 							"    ]\r",
@@ -420,14 +476,14 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:3000/lob/api/addWishlist",
+					"raw": "localhost:3000/api/mitchell/addWishlist",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
+						"mitchell",
 						"addWishlist"
 					]
 				}
@@ -435,7 +491,7 @@
 			"response": []
 		},
 		{
-			"name": "- Remove Wishlist",
+			"name": "Mitchell - Remove Wishlist",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -446,7 +502,7 @@
 							"if (!data || data.length <= 0) {\r",
 							"    data = [\r",
 							"        {\r",
-							"            \"del_wishlist_user_key\": \"1234567890\",\r",
+							"            \"del_wishlist_user_key\": \"user1\",\r",
 							"            \"del_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"del_wishlist_status_code\": 200,\r",
 							"            \"del_wishlist_body\": {\r",
@@ -454,11 +510,19 @@
 							"            }\r",
 							"        },\r",
 							"        {\r",
-							"            \"del_wishlist_user_key\": \"test\",\r",
+							"            \"del_wishlist_user_key\": \"unknown\",\r",
 							"            \"del_wishlist_app_id\": \"com.ktucalender\",\r",
 							"            \"del_wishlist_status_code\": 400,\r",
 							"            \"del_wishlist_body\": {\r",
 							"                \"message\": \"User belum terdaftar\"\r",
+							"            }\r",
+							"        },\r",
+							"        {\r",
+							"            \"del_wishlist_user_key\": \"user1\",\r",
+							"            \"del_wishlist_app_id\": \"com.ktucalende\",\r",
+							"            \"del_wishlist_status_code\": 400,\r",
+							"            \"del_wishlist_body\": {\r",
+							"                \"message\": \"Aplikasi tidak ditemukan\"\r",
 							"            }\r",
 							"        }\r",
 							"    ]\r",
@@ -528,14 +592,14 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:3000/lob/api/removeWishlist",
+					"raw": "localhost:3000/api/mitchell/removeWishlist",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"lob",
 						"api",
+						"mitchell",
 						"removeWishlist"
 					]
 				}
