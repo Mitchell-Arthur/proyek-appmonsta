@@ -312,6 +312,55 @@ async function getPostByEmail(email){
   return result;
 }
 
+async function getReviewByID(id_post){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM review_post WHERE id_post = '${id_post}'`);
+  conn.release();
+  return result;
+}
+
+async function getLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM like_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function getDislikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM dislike_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function deleteLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM like_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function deleteDislikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM dislike_post WHERE id_post = '${id_post}' AND email='${email}'`);
+  conn.release();
+  return result;
+}
+
+async function insertLikedPost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO like_post VALUES('','${id_post}','${email}')`);
+  conn.release();
+  return result;
+}
+
+async function insertDislikePost(id_post,email){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO dislike_post VALUES('','${id_post}','${email}')`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
@@ -340,5 +389,12 @@ module.exports = {
   updatePost: updatePost,
   reviewPost: reviewPost,
   getLastReview: getLastReview,
-  getPostByEmail: getPostByEmail
+  getPostByEmail: getPostByEmail,
+  getReviewByID: getReviewByID,
+  getLikedPost: getLikedPost,
+  getDislikedPost: getDislikedPost,
+  deleteDislikedPost: deleteDislikedPost,
+  deleteLikedPost: deleteLikedPost,
+  insertLikedPost: insertLikedPost,
+  insertDislikePost: insertDislikePost
 }
