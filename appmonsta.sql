@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Bulan Mei 2020 pada 11.09
+-- Waktu pembuatan: 31 Bulan Mei 2020 pada 11.13
 -- Versi server: 10.4.6-MariaDB
 -- Versi PHP: 7.3.8
 
@@ -27,6 +27,19 @@ USE `appmonsta`;
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `dislike_post`
+--
+
+DROP TABLE IF EXISTS `dislike_post`;
+CREATE TABLE `dislike_post` (
+  `id_dislike` int(11) NOT NULL,
+  `id_post` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `history_vote`
 --
 
@@ -43,6 +56,19 @@ CREATE TABLE `history_vote` (
 
 INSERT INTO `history_vote` (`email_voter`, `id_list_vote`, `indeks_pilihan_vote`) VALUES
 ('popo.com', 18, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `like_post`
+--
+
+DROP TABLE IF EXISTS `like_post`;
+CREATE TABLE `like_post` (
+  `id_like` int(11) NOT NULL,
+  `id_post` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -184,6 +210,18 @@ CREATE TABLE `wishlist` (
 --
 
 --
+-- Indeks untuk tabel `dislike_post`
+--
+ALTER TABLE `dislike_post`
+  ADD PRIMARY KEY (`id_dislike`);
+
+--
+-- Indeks untuk tabel `like_post`
+--
+ALTER TABLE `like_post`
+  ADD PRIMARY KEY (`id_like`);
+
+--
 -- Indeks untuk tabel `list_vote`
 --
 ALTER TABLE `list_vote`
@@ -210,6 +248,18 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
 --
+
+--
+-- AUTO_INCREMENT untuk tabel `dislike_post`
+--
+ALTER TABLE `dislike_post`
+  MODIFY `id_dislike` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `like_post`
+--
+ALTER TABLE `like_post`
+  MODIFY `id_like` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `list_vote`

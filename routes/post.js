@@ -459,4 +459,9 @@ router.post('/mypost',async function(req,res){
     }
 });
 
+//get review post
+//like post
+//dislike post
+
+
 module.exports = router;
