@@ -65,10 +65,12 @@ router.post('/register',async function(req,res){
     var password = req.body.password;
     var email = req.body.email;
     
-    if(username == ""|| password == "" || email == "") res.status(400).send("ada field yang tidak diisi");
+    if(username == ""|| password == "" || email == "") res.status(400).send({message : "ada field yang tidak diisi"});
     let result = await models.register_user(username, password, email);
-    if(!result) res.status(400).send("register gagal email pernah digunakan")
-    else res.status(400).send("register berhasil")
+    if(!result) res.status(400).send({message : "register gagal email pernah digunakan"})
+    else res.status(200).send({
+        message : "register berhasil"
+    })
 });
 
 router.post("/login" ,async function(req,res){
@@ -76,7 +78,7 @@ router.post("/login" ,async function(req,res){
     var password = req.body.password;
 
     let result = await models.login_user(email, password);
-    if(!result) res.status(400).send("Login gagal user tidak ditemukan")
+    if(!result) res.status(400).send({message : "Login gagal user tidak ditemukan"})
     else{
         const token = jwt.sign({    
             "email":result.email,
@@ -92,16 +94,17 @@ router.put("/update_profile" , upload,  async function(req,res){
     var profile_picture = req.file;
     const token = req.header("x-auth-token");
     var user = 1;
-    if(!token) res.status(400).send("Anda harus melakukan login terlebih dahulu.")
+    if(!token) res.status(400).send({message : "Anda harus melakukan login terlebih dahulu."})
     else{
         try{
             user = jwt.verify(token,"lastofkelasB");
         }catch(err){
-            return res.status(401).send("Token Invalid harap lakukan login ulang");
+            console.log(token)
+            return res.status(401).send({message : "Token Invalid harap lakukan login ulang"});
         }
         let result = await models.update_profile(username, password, user.email + path.extname(req.file.originalname).toLowerCase(), user.email)
-        if(result)res.status(200).send("Profile berhasil di update")
-        else res.status(404).send("user dengan email tersebut tidak ditemukan")
+        if(result)res.status(200).send({message : "Profile berhasil di update"})
+        else res.status(404).send({message : "user dengan email tersebut tidak ditemukan"})
     }
 });
 
@@ -144,8 +147,8 @@ router.put("/upgrade_premium", async function(req,res){
                             }
                             else{
                                 let result = upgrade_user(user.email);
-                                if(result) res.status(200).send("Pembayaran telah berhasil dilakukan, anda telah menjadi premium member")
-                                else res.status(404).send("user dengan email tersebut tidak ditemukan")
+                                if(result) res.status(200).send({message : "Pembayaran telah berhasil dilakukan, anda telah menjadi premium member"})
+                                else res.status(404).send({message : "user dengan email tersebut tidak ditemukan"})
                             }
                         })
                     }
@@ -176,7 +179,7 @@ router.post('/make_vote' , async function(req,res){
         for(var indeks_list_id_app = 0;indeks_list_id_app<list_id_app.length;indeks_list_id_app++){
             insert_to_vote(list_id_app[indeks_list_id_app], result.insertId, indeks_list_id_app + 1)
         }
-        res.status(200).send('Vote berhasil dibuat');
+        res.status(200).send({message : "Vote berhasil dibuat"});
     }
 })
 
@@ -195,7 +198,7 @@ router.get('/input_vote' , async function(req,res){
         }
         let result = await models.input_vote(user.email, id_list_vote, indeks_pilihan_vote);
         if(result){
-            res.status(200).send("Vote anda telah disimpan")
+            res.status(200).send({message : "Vote anda telah disimpan"})
         }
         else{
             res.status(400).send("Anda sudah pernah melakukan vote pada voting ini")
@@ -204,8 +207,7 @@ router.get('/input_vote' , async function(req,res){
 });
 
 router.get('/get_ranking_vote', async function(req,res){
-    var id_list_vote = req.body.id_list_vote
-
+    var id_list_vote = req.body.id_list_vote;
     let result = await models.get_ranking_vote(id_list_vote);
     if(!result){
         res.status(400).send("vote yang anda cari tidak ditemukan")

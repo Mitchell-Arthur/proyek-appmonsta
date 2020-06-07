@@ -148,13 +148,12 @@ async function get_ranking_vote(id_list_vote){
   const conn = await getConnection();
   let query = `select * from vote where id_list_vote = '${id_list_vote}' order by Jumlah_vote DESC`
   let result = await executeQuery(conn, query)
-
+  console.log(id_list_vote)
   if(result.length == 0){
-    conn.release();s
+    conn.release();
     return false
   }
   conn.release();
-  console.log(result)
   return result;
 }
 
