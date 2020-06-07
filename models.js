@@ -376,7 +376,7 @@ async function getRatingByID(ratingID){
   return result;
 }
 
-async function insertRating(rating, comment, username, email){
+async function insertRating(rating, comment, email){
   let shownUsername = '';
   const conn = await getConnection();
   const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
@@ -384,7 +384,7 @@ async function insertRating(rating, comment, username, email){
     conn.release;
     return false;
   }
-  if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = username;
+  if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = userTypeCheck.username;
   else snownUsername = "Anonymous";
   var today = new Date();
   var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
