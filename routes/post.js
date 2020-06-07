@@ -126,7 +126,7 @@ router.get('/view',async function(req,res){
     let id_app = req.params.id_app;
     let date = req.params.date;
 
-    let result = await models.getPost();
+    let result = await models.getPost(search, id_app);
     return res.status(200).send(result);
 });
 
@@ -161,7 +161,7 @@ router.delete('/delete',async function(req,res){
         });
         res.status(400).send(output);
     }
-
+    console.log(token);
     if(user_logon.level == 2){
         let id_post = req.body.id_post;
         if(id_post == ""){
@@ -369,7 +369,7 @@ router.post('/comment',async function(req,res){
                     "error" : msg,
                     "data" : data
                 });
-                res.status(401).send(output);
+                res.status(200).send(output);
             }else{
                 status = "Gagal Comment";
                 msg = "ID Post tidak ditemukan!";
