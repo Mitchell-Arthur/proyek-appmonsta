@@ -380,6 +380,10 @@ async function insertRating(rating, comment, username, email){
   let shownUsername = '';
   const conn = await getConnection();
   const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
+  if(userTypeCheck.length<=0){
+    conn.release;
+    return false;
+  }
   if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = username;
   else snownUsername = "Anonymous";
   var today = new Date();
@@ -407,6 +411,11 @@ async function deleteRatingByID(ratingID){
 
 async function insertLikeonRating(ratingID, comment){
   const conn = await getConnection();
+  const userCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
+  if(userCheck.length<=0){
+    conn.release;
+    return false;
+  }
   const result = await executeQuery(conn, `INSERT INTO like_rating VALUES('',${ratingID},1,'${comment}')`);
   conn.release();
   return result;
@@ -414,6 +423,11 @@ async function insertLikeonRating(ratingID, comment){
 
 async function deleteLikeonRatingbyID(likeID){
   const conn = await getConnection();
+  const userCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
+  if(userCheck.length<=0){
+    conn.release;
+    return false;
+  }
   const result = await executeQuery(conn, `DELETE FROM like_rating WHERE likeID = ${likeID}`);
   conn.release();
   return result;

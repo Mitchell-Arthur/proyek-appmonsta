@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2020 at 09:32 AM
+-- Generation Time: Jun 07, 2020 at 03:57 PM
 -- Server version: 10.1.35-MariaDB
 -- PHP Version: 7.2.9
 
@@ -80,10 +80,11 @@ CREATE TABLE IF NOT EXISTS `like_post` (
 
 DROP TABLE IF EXISTS `like_rating`;
 CREATE TABLE IF NOT EXISTS `like_rating` (
-  `likeID` varchar(20) NOT NULL,
-  `ratingID` text NOT NULL,
+  `likeID` int(11) NOT NULL AUTO_INCREMENT,
+  `ratingID` int(11) NOT NULL,
   `like_indicator` tinyint(1) NOT NULL,
   `comment` text NOT NULL,
+  `email` text NOT NULL,
   PRIMARY KEY (`likeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -144,7 +145,7 @@ INSERT INTO `post` (`id_post`, `email`, `total_up`, `total_down`, `tgl_post`, `j
 
 DROP TABLE IF EXISTS `rating`;
 CREATE TABLE IF NOT EXISTS `rating` (
-  `ratingID` varchar(20) NOT NULL,
+  `ratingID` int(11) NOT NULL AUTO_INCREMENT,
   `appID` text NOT NULL,
   `rating` int(2) NOT NULL,
   `comment` text NOT NULL,
