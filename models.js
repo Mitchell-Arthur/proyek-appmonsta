@@ -361,6 +361,68 @@ async function insertDislikePost(id_post,email){
   return result;
 }
 
+//NESTOR
+async function getRatingByApp(appID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT r.appID AS appID, r.ratingID AS ratingID, r.rating AS rating, r.comment AS comment, r.rating_date AS rating_date, r.username AS username, lr.COUNT(likeID) AS like_count FROM rating r, like_rating lr WHERE lr.ratingID = r.ratingID AND appID = '${appID}'`);
+  conn.release();
+  return result;
+}
+
+async function getRatingByID(ratingID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `SELECT * FROM rating r, like_rating lr WHERE ratingID = ${ratingID} AND r.ratingID = lr.ratingID`);
+  conn.release();
+  return result;
+}
+
+async function insertRating(rating, comment, email){
+  let shownUsername = '';
+  const conn = await getConnection();
+  const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
+  if(userTypeCheck.length<=0){
+    conn.release;
+    return false;
+  }
+  if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = userTypeCheck.username;
+  else snownUsername = "Anonymous";
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time;
+  const result = await executeQuery(conn, `INSERT INTO rating VALUES('','${appID}',${rating},'${comment}','${dateTime}','${shownUsername}', '${email}')`);
+  conn.release;
+  return result;
+}
+
+async function editRating(ratingID, rating, comment){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `UPDATE rating SET rating = '${rating}', comment = '${comment}' WHERE ratingID = ${ratingID}`);
+  conn.release;
+  return result;
+}
+
+async function deleteRatingByID(ratingID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM rating WHERE ratingID = ${ratingID}`);
+  conn.release();
+  return result;
+}
+
+async function insertLikeonRating(ratingID, comment){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `INSERT INTO like_rating VALUES('',${ratingID},1,'${comment}')`);
+  conn.release();
+  return result;
+}
+
+async function deleteLikeonRatingbyID(likeID){
+  const conn = await getConnection();
+  const result = await executeQuery(conn, `DELETE FROM like_rating WHERE likeID = ${likeID}`);
+  conn.release();
+  return result;
+}
+
 module.exports = {
   getUser: getUser,
   getWishlist: getWishlist,
@@ -396,5 +458,12 @@ module.exports = {
   deleteDislikedPost: deleteDislikedPost,
   deleteLikedPost: deleteLikedPost,
   insertLikedPost: insertLikedPost,
-  insertDislikePost: insertDislikePost
+  insertDislikePost: insertDislikePost,
+  getRatingByApp: getRatingByApp,
+  getRatingByID: getRatingByID,
+  insertRating: insertRating,
+  editRating: editRating,
+  deleteRatingByID: deleteRatingByID,
+  insertLikeonRating: insertLikeonRating,
+  deleteLikeonRatingbyID: deleteLikeonRatingbyID
 }
