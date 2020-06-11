@@ -7,42 +7,6 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
-// get all app id # tidak terpakai
-router.get('/getAllID', async function(req, res) {
-  const allID = await new Promise(function(resolve, reject) {
-    var options = {
-      'method' : 'GET',
-      'url' : `https://api.appmonsta.com/v1/stores/android/ids`,
-      'headers' : {
-        'Authorization': `Basic ${access_key}`
-      }
-    }
-    request(options, function(error, response) {
-      if (error) reject(new Error(error));
-      else resolve((response.body).split("\n"));
-    });
-  });
-  res.json(allID);
-});
-
-router.get('/getAllAppDetail', async function(req, res) {
-  const date = new Date().toISOString().split('T')[0];
-  const allAppDetail = await new Promise(function(resolve, reject) {
-    var options = {
-      'method' : 'GET',
-      'url' : `https://api.appmonsta.com/v1/stores/android/details.json?date=${date}&country=US`,
-      'headers' : {
-        'Authorization': `Basic ${access_key}`
-      }
-    }
-    request(options, function(error, response) {
-      if (error) reject(new Error(error));
-      else resolve(JSON.parse(response.body)); // kacau disini, tidak bisa json parse
-    });
-  });
-  res.json(allAppDetail);
-});
-
 // get app detail
 router.get('/app', async function(req, res) {
   const ID = req.query.app_id;
@@ -81,28 +45,24 @@ router.get('/app', async function(req, res) {
 // Wishlist
 router.get('/wishlist', async function(req, res) {
   const token = req.header("x-auth-token");
-  const user = {};
+  var user = {};
   if (!token) return res.status(401).send("Token not found");
   try { user = jwt.verify(token, "lastofkelasB"); } 
-  catch (err) { return res.status(401).send("Token Invalid"); } //401 not authorized
+  catch (err) { return res.status(401).send("Token Invalid"); }
   const email = user.email;
-  const app_id = req.query.app_id;
-  const userCheck = await models.getUser(email);
-  if (userCheck.length == 0) return res.status(400).send({message:"User belum terdaftar"});
-  const result = await models.getWishlist(email, app_id);
-  if (result) res.status(200).send({value: result});
-  else if (!result) res.status(400).send({message: "aplikasi wishlist tidak ditemukan"});
+  const wishlists = await models.getWishlist(email);
+  const result = [];
+  wishlists.forEach(wishlist => { result.push(wishlist.app_id); });
+  if (result) res.status(200).send({app_id: result});
 });
 router.post('/wishlist', async function(req, res) {
   const token = req.header("x-auth-token");
-  const user = {};
+  var user = {};
   if (!token) return res.status(401).send("Token not found");
-  try { user = jwt.verify(token, "lastofkelasB"); } 
-  catch (err) { return res.status(401).send("Token Invalid"); } //401 not authorized
+  try { user = jwt.verify(token, "lastofkelasB"); }
+  catch (err) { return res.status(401).send("Token Invalid"); }
   const email = user.email;
   const app_id = req.body.app_id;
-  let userCheck = await models.getUser(email);
-  if (userCheck.length == 0) return res.status(400).send({message:"User belum terdaftar"});
   const appCheck = await new Promise(function(resolve, reject) {
     var options = {
       'method' : 'GET',
@@ -117,19 +77,19 @@ router.post('/wishlist', async function(req, res) {
     });
   });
   if (appCheck.message) return res.status(400).send({message:"Aplikasi tidak ditemukan"});
+  const wishlists = await models.getWishlist(email);
+  wishlists.forEach(wishlist => { if (wishlist.app_id == app_id) return res.status(400).send({message:"Aplikasi sudah ada di wishlist"}); });
   const result = await models.insertWishlist(email, app_id);
   if (result) res.status(200).send({message:"app berhasil ditambahkan ke wishlist"});
 });
 router.delete('/wishlist', async function(req, res) {
   const token = req.header("x-auth-token");
-  const user = {};
+  var user = {};
   if (!token) return res.status(401).send("Token not found");
   try { user = jwt.verify(token, "lastofkelasB"); } 
-  catch (err) { return res.status(401).send("Token Invalid"); } //401 not authorized
+  catch (err) { return res.status(401).send("Token Invalid"); }
   const email = user.email;
   const app_id = req.body.app_id;
-  let userCheck = await models.getUser(email);
-  if (userCheck.length == 0) return res.status(400).send({message:"User belum terdaftar"});
   const appCheck = await models.getWishlist(email, app_id);
   if (appCheck.length == 0) return res.status(400).send({message:"Aplikasi tidak ditemukan"});
   const result = await models.deleteWishlist(email, app_id);
@@ -214,7 +174,7 @@ router.get('/recommendation', async function(req, res) {
     const top = await new Promise(function(resolve, reject) {
       var options = {
         'method' : 'GET',
-        'url' : `https://api.appmonsta.com/v1/stores/android/rankings.json?country=US&date=2020-06-10`,
+        'url' : `https://api.appmonsta.com/v1/stores/android/rankings.json?country=US&date=2020-06-15`,
         'headers' : {
           'Authorization': `Basic ${access_key}`
         }

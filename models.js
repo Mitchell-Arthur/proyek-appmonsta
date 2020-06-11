@@ -4,9 +4,9 @@ require('dotenv').config();
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER, //root
-  password: process.env.DB_PASS, //~}+~6h$wmjpxOUc=
+  password: process.env.DB_PASS, //NED}59(\d0u6jg+
   port: process.env.DB_PORT,
-  database: process.env.DB_NAME //lob_proyek_soa
+  database: process.env.DB_NAME //id13920581_lob_proyek_soa
 });
 
 function getConnection() {
@@ -148,29 +148,22 @@ async function get_ranking_vote(id_list_vote){
   const conn = await getConnection();
   let query = `select * from vote where id_list_vote = '${id_list_vote}' order by Jumlah_vote DESC`
   let result = await executeQuery(conn, query)
-
+  console.log(id_list_vote)
   if(result.length == 0){
-    conn.release();s
+    conn.release();
     return false
   }
   conn.release();
-  console.log(result)
   return result;
 }
 
 //Mitchell
-//mungkin tidak dipakai
-async function getUser(email){
-  const conn = await getConnection();
-  let query = `SELECT * FROM user WHERE email ='${email}'`;
-  const result = await executeQuery(conn, query);
-  conn.release();
-  return result;
-}
 
 async function getWishlist(email, app_id){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT * FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
+  var query = `SELECT app_id FROM wishlist WHERE email ='${email}'`;
+  if (app_id) query += ` AND app_id = '${app_id}'`
+  const result = await executeQuery(conn, query);
   conn.release();
   return result;
 }
@@ -185,30 +178,6 @@ async function insertWishlist(email, app_id){
 async function deleteWishlist(email, app_id){
   const conn = await getConnection();
   const result = await executeQuery(conn, `DELETE FROM wishlist WHERE email ='${email}' AND app_id = '${app_id}'`);
-  conn.release();
-  return result;
-}
-
-async function getHistory(email, genre){
-  const conn = await getConnection();
-  let query = `SELECT * FROM history WHERE email = '${email}'`;
-  if (genre) query += ` AND genre = '${genre}'`;
-  query += ` ORDER BY jumlah_akses DESC`;
-  const result = await executeQuery(conn, query);
-  conn.release();
-  return result;
-}
-
-async function insertHistory(email, genre){
-  const conn = await getConnection();
-  const result = await executeQuery(conn, `INSERT INTO history VALUES ('${email}','${genre}',1)`);
-  conn.release();
-  return result;
-}
-
-async function updateHistory(email, genre, akses){
-  const conn = await getConnection();
-  const result = await executeQuery(conn, `UPDATE history SET jumlah_akses = ${akses} WHERE email = '${email}' AND genre = '${genre}'`);
   conn.release();
   return result;
 }
@@ -424,13 +393,9 @@ async function deleteLikeonRatingbyID(likeID){
 }
 
 module.exports = {
-  getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
-  getHistory: getHistory,
-  insertHistory: insertHistory,
-  updateHistory: updateHistory,
   login_user : login_user,
   register_user : register_user,
   update_profile : update_profile,
