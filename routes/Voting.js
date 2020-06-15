@@ -60,36 +60,59 @@ async function insert_to_vote(id_app, id_list_vote, indeks_pilihan_vote){
     return true;
 }
 
-router.post('/register',async function(req,res){
-    var username = req.body.username;
-    var password = req.body.password;
-    var email = req.body.email;
-    
-    if(username == ""|| password == "" || email == "") res.status(400).send({message : "ada field yang tidak diisi"});
-    let result = await models.register_user(username, password, email);
-    if(!result) res.status(400).send({message : "register gagal email pernah digunakan"})
-    else res.status(200).send({
-        message : "register berhasil"
-    })
-});
+router.post('/make_vote' , async function(req,res){
+    var list_id_app = req.query.id_app.split(',')
+    var judul_vote = req.body.judul_vote
 
-router.post("/login" ,async function(req,res){
-    var email = req.body.email;
-    var password = req.body.password;
-
-    let result = await models.login_user(email, password);
-    if(!result) res.status(400).send({message : "Login gagal user tidak ditemukan"})
+    const token = req.header('x-auth-token')
+    var user = 1;
+    if(!token)res.status(400).send("anda harus melakukan login terlebih dahulu")
     else{
-        const token = jwt.sign({    
-            "email":result.email,
-            "level":result.tipe_user
-        }   ,"lastofkelasB", {expiresIn : '1h'});
-        res.status(200).send(token);
+        try{
+            user = jwt.verify(token,"lastofkelasB");
+        }catch(err){
+            return res.status(401).send("Token Invalid harap lakukan login ulang");
+        }
+        let result = await models.make_vote(judul_vote, user.email);
+        for(var indeks_list_id_app = 0;indeks_list_id_app<list_id_app.length;indeks_list_id_app++){
+            insert_to_vote(list_id_app[indeks_list_id_app], result.insertId, indeks_list_id_app + 1)
+        }
+        res.status(200).send({message : "Vote berhasil dibuat"});
+    }
+})
+
+router.get('/input_vote' , async function(req,res){
+    var id_list_vote = req.body.id_list_vote
+    var indeks_pilihan_vote = req.body.indeks_pilihan_vote
+
+    const token = req.header('x-auth-token')
+    var user = 1;
+    if(!token)res.status(400).send("anda harus melakukan login terlebih dahulu")
+    else{
+        try{
+            user = jwt.verify(token,"lastofkelasB");
+        }catch(err){
+            return res.status(401).send("Token Invalid harap lakukan login ulang");
+        }
+        let result = await models.input_vote(user.email, id_list_vote, indeks_pilihan_vote);
+        if(result){
+            res.status(200).send({message : "Vote anda telah disimpan"})
+        }
+        else{
+            res.status(400).send("Anda sudah pernah melakukan vote pada voting ini")
+        }
     }
 });
 
-router.get('/test', function(req,res){
-    res.status(200).send("waow")
+router.get('/get_ranking_vote', async function(req,res){
+    var id_list_vote = req.body.id_list_vote;
+    let result = await models.get_ranking_vote(id_list_vote);
+    if(!result){
+        res.status(400).send("vote yang anda cari tidak ditemukan")
+    }
+    else{
+        res.status(200).send(result)
+    }
 });
 
 module.exports = router;
