@@ -331,35 +331,35 @@ async function insertDislikePost(id_post,email){
 }
 
 //NESTOR
-async function getRatingByApp(appID){
+async function getRatingByApp(query){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT r.appID AS appID, r.ratingID AS ratingID, r.rating AS rating, r.comment AS comment, r.rating_date AS rating_date, r.username AS username, lr.COUNT(likeID) AS like_count FROM rating r, like_rating lr WHERE lr.ratingID = r.ratingID AND appID = '${appID}'`);
+  const result = await executeQuery(conn, `SELECT r.appID AS appID, r.ratingID AS ratingID, r.rating AS rating, r.comment AS comment, r.rating_date AS rating_date, r.email AS email, COUNT(lr.likeID) AS like_count FROM rating r LEFT JOIN like_rating lr ON lr.ratingID = r.ratingID WHERE r.appID = '${query}'`);
   conn.release();
   return result;
 }
 
-async function getRatingByID(ratingID){
+async function getRatingByID(query){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT * FROM rating r, like_rating lr WHERE ratingID = ${ratingID} AND r.ratingID = lr.ratingID`);
+  let result = await executeQuery(conn, `SELECT * FROM rating r LEFT JOIN like_rating lr on r.ratingID = lr.ratingID WHERE r.ratingID = ${query}`);
   conn.release();
   return result;
 }
 
 async function insertRating(appID, rating, comment, email){
-  let shownUsername = '';
+  let shownEmail = "";
   const conn = await getConnection();
   const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);
   if(userTypeCheck.length<=0){
     conn.release;
     return false;
   }
-  if(parseInt(userTypeCheck.tipeuser)>1) shownUsername = userTypeCheck.username;
-  else snownUsername = "Anonymous";
+  if(parseInt(userTypeCheck.tipe_user)>1) shownEmail = userTypeCheck.email;
+  else shownEmail = "Anonymous";
   var today = new Date();
   var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   var dateTime = date+' '+time;
-  const result = await executeQuery(conn, `INSERT INTO rating VALUES('','${appID}',${rating},'${comment}','${dateTime}','${shownUsername}', '${email}')`);
+  const result = await executeQuery(conn, `INSERT INTO rating VALUES('','${appID}',${rating},'${comment}','${dateTime}', '${shownEmail}')`);
   conn.release;
   return result;
 }
@@ -378,9 +378,9 @@ async function deleteRatingByID(ratingID){
   return result;
 }
 
-async function insertLikeonRating(ratingID, comment){
+async function insertLikeonRating(ratingID, comment, email){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `INSERT INTO like_rating VALUES('',${ratingID},1,'${comment}')`);
+  const result = await executeQuery(conn, `INSERT INTO like_rating VALUES('',${ratingID},1,'${comment}','${email}')`);
   conn.release();
   return result;
 }
