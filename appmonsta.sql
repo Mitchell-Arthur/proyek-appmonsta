@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2020 at 03:57 PM
+-- Generation Time: Jun 15, 2020 at 08:20 PM
 -- Server version: 10.1.35-MariaDB
 -- PHP Version: 7.2.9
 
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `like_rating` (
   `comment` text NOT NULL,
   `email` text NOT NULL,
   PRIMARY KEY (`likeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -150,10 +150,9 @@ CREATE TABLE IF NOT EXISTS `rating` (
   `rating` int(2) NOT NULL,
   `comment` text NOT NULL,
   `rating_date` date NOT NULL,
-  `username` text NOT NULL,
   `email` text NOT NULL,
   PRIMARY KEY (`ratingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 

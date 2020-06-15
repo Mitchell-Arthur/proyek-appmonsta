@@ -404,7 +404,6 @@ module.exports = {
   insert_vote : insert_vote,
   input_vote : input_vote,
   get_ranking_vote : get_ranking_vote,
-  deleteWishlist: deleteWishlist,
   insertPost: insertPost,
   insertLastPostIMG: insertLastPostIMG,
   getLastPost: getLastPost,
