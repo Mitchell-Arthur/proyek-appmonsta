@@ -345,7 +345,7 @@ async function getRatingByID(ratingID){
   return result;
 }
 
-async function insertRating(rating, comment, email){
+async function insertRating(appID, rating, comment, email){
   let shownUsername = '';
   const conn = await getConnection();
   const userTypeCheck = await executeQuery(conn, `SELECT * FROM user WHERE email = '${email}'`);

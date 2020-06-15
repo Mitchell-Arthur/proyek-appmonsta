@@ -4,6 +4,7 @@ const app = express();
 const request = require('request');
 const mc = require("./routes/mc");
 const mitchell = require("./routes/Mitchell");
+const nestor = require("./routes/Nestor")
 require('dotenv').config()
 
 //Ming
@@ -21,6 +22,7 @@ const stripe_public_key = process.env.STRIPED_PUBLIC_KEY;
 
 app.use("/api/mitchell", mitchell);
 app.use("/api/post",post);
+app.use("/api/nestor",nestor);
 
 //EJS MING
 app.get('/demo/post/', async function(req, res) {

@@ -35,16 +35,21 @@ router.get('/getRatingByID', async function(req,res){
 });
 
 router.post('/insertRating', async function(req,res){
-    let rating = req.body.rating;
-    let comment = req.body.comment;
-    if(!rating || !comment || !email) res.status(400).send("Semua field harus diisi!");
     const token = req.header("x-auth-token");
     const user = {};
     if (!token) return res.status(401).send("Token not found");
-    try { user = jwt.verify(token, "lastofkelasB"); } 
-    catch (err) { return res.status(401).send("Token Invalid"); } //401 not authorized
+    try { 
+        user = jwt.verify(token, "lastofkelasB");
+    } 
+    catch (err) { 
+        return res.status(401).send("Token Invalid"); 
+    }
+    let appID = req.body.appID; 
+    let rating = req.body.rating;
+    let comment = req.body.comment;
+    if(!appID || !rating || !comment) res.status(400).send("Semua field harus diisi!");
     let email = user.email;
-    let result = await models.insertRating(rating, comment, email); 
+    let result = await models.insertRating(appID, rating, comment, email); 
     if(result) res.status(200).send("Insert rating berhasil!")
     else res.status(400).send("Insert rating gagal.");
 });
