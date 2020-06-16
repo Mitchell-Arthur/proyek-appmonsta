@@ -158,6 +158,13 @@ async function get_ranking_vote(id_list_vote){
 }
 
 //Mitchell
+async function getUser(email){
+  const conn = await getConnection();
+  var query = `SELECT * FROM user WHERE email ='${email}'`;
+  const result = await executeQuery(conn, query);
+  conn.release();
+  return result;
+}
 
 async function getWishlist(email, app_id){
   const conn = await getConnection();
@@ -393,6 +400,7 @@ async function deleteLikeonRatingbyID(likeID){
 }
 
 module.exports = {
+  getUser: getUser,
   getWishlist: getWishlist,
   insertWishlist: insertWishlist,
   deleteWishlist: deleteWishlist,
