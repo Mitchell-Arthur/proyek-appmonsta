@@ -9,37 +9,21 @@ const access_key = process.env.ACCESS_KEY;
 
 // get app detail
 router.get('/app', async function(req, res) {
-const ID = req.query.app_id;
-const data = await new Promise(function(resolve, reject) {
+  const ID = req.query.app_id;
+  const data = await new Promise(function(resolve, reject) {
     var options = {
-    'method' : 'GET',
-    'url' : `https://api.appmonsta.com/v1/stores/android/details/${ID}.json?country=US`,
-    'headers' : {
+      'method' : 'GET',
+      'url' : `https://api.appmonsta.com/v1/stores/android/details/${ID}.json?country=US`,
+      'headers' : {
         'Authorization': `Basic ${access_key}`
-    }
+      }
     }
     request(options, function(error, response) {
-    if (error) reject(new Error(error));
-    else resolve(JSON.parse(response.body));
+      if (error) reject(new Error(error));
+      else resolve(JSON.parse(response.body));
     });
-});
-
-//catat history untuk recommendation
-const token = req.header("x-auth-token");
-if (token){
-    let user = {}
-    try { 
-    user = jwt.verify(token, "lastofkelasB"); 
-    const email = user.email;
-    for (let i = 0; i < data.genres.length; i++) {
-        const genre = data.genres[i];
-        const historyCheck = await models.getHistory(email, genre);
-        if (historyCheck.length == 0) await models.insertHistory(email, genre);
-        else await models.updateHistory(email, genre, historyCheck[0].jumlah_akses + 1);
-    }
-    } catch (err) { console.log("Token Invalid"); console.log(err); } 
-}
-res.json(data);
+  });
+  res.json(data);
 });
 
   

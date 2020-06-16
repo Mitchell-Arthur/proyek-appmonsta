@@ -26,20 +26,15 @@ const stripe_secret_key = process.env.STRIPED_SECRET_KEY;
 const stripe_public_key = process.env.STRIPED_PUBLIC_KEY;
 
 //nestor
-app.use("/api/nestor",nestor);
+app.use("/api/rating",nestor);
+app.use("/api/like",likeRoutes);
+
 //Mitchell
 app.use("/api/wishlist", mitchell);
 app.use("/api/app", appRoutes);
 
 //Ming
 app.use("/api/post",post);
-
-//EJS MING
-app.get('/demo/post/', async function(req, res) {
-  
-
-  res.render("app/post",{data:data});
-});
 
 app.listen(port, () => {
   console.log(`listening port ${port}`);
