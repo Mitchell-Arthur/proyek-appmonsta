@@ -1,0 +1,3057 @@
+{
+	"info": {
+		"_postman_id": "5f5f083c-94d7-46ff-9387-6a466a7a0e35",
+		"name": "Proyek_SOA_Appmonsta_Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login/Register",
+			"item": [
+				{
+					"name": "User Register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "49414de5-eaed-4e0d-be3b-717568f33ec4",
+								"exec": [
+									"data = pm.environment.get(\"register\"); \r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"register_username\": \"Mike\",\r",
+									"            \"register_password\": \"1234\",\r",
+									"            \"register_email\": \"michael123@mail.com\",\r",
+									"            \"register_status_code\": 200,\r",
+									"            \"register_body\": {\r",
+									"                \"message\": \"register berhasil\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"register_username\": \"Mike\",\r",
+									"            \"register_password\": \"1234\",\r",
+									"            \"register_email\": \"mike.com\",\r",
+									"            \"register_status_code\": 400,\r",
+									"            \"register_body\": {\r",
+									"                \"message\": \"register gagal email pernah digunakan\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"register_username\": \"\",\r",
+									"            \"register_password\": \"1234\",\r",
+									"            \"register_email\": \"michael.com\",\r",
+									"            \"register_status_code\": 400,\r",
+									"            \"register_body\": {\r",
+									"                \"message\": \"ada field yang tidak diisi\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"register_username\", currentData[\"register_username\"]);\r",
+									"pm.environment.set(\"register_password\", currentData[\"register_password\"]);\r",
+									"pm.environment.set(\"register_email\", currentData[\"register_email\"]);\r",
+									"pm.environment.set(\"register_status_code\", currentData[\"register_status_code\"]);\r",
+									"pm.environment.set(\"register_body\", currentData[\"register_body\"]);\r",
+									"pm.environment.set(\"register\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "2f7bb42b-7270-4413-a990-a9352a23137d",
+								"exec": [
+									"data = pm.environment.get(\"register\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Register\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"register_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"register_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"register_username\");\r",
+									"    pm.environment.unset(\"register_password\");\r",
+									"    pm.environment.unset(\"register_email\");\r",
+									"    pm.environment.unset(\"register_status_code\");\r",
+									"    pm.environment.unset(\"register_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{register_username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{register_password}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{register_email}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7cfa3db9-ae8b-4136-b92e-b5ead58e8f62",
+								"exec": [
+									"data = pm.environment.get(\"login\"); \r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"login_email\": \"michael.com\",\r",
+									"            \"login_password\": \"1234\",\r",
+									"            \"login_status_code\": 200\r",
+									"        },\r",
+									"        {\r",
+									"            \"login_email\": \"xyz\",\r",
+									"            \"login_password\": \"1234\",\r",
+									"            \"login_status_code\": 400,\r",
+									"            \"login_body\": {\r",
+									"                \"message\": \"Login gagal user tidak ditemukan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"login_email\", currentData[\"login_email\"]);\r",
+									"pm.environment.set(\"login_password\", currentData[\"login_password\"]);\r",
+									"pm.environment.set(\"login_status_code\", currentData[\"login_status_code\"]);\r",
+									"pm.environment.set(\"login_body\", currentData[\"login_body\"]);\r",
+									"pm.environment.set(\"login\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5d3f054d-cdc3-47b8-a2cc-f87b9df03f84",
+								"exec": [
+									"data = pm.environment.get(\"login\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Login\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"login_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"login_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"login_email\");\r",
+									"    pm.environment.unset(\"login_password\");\r",
+									"    pm.environment.unset(\"login_status_code\");\r",
+									"    pm.environment.unset(\"login_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{login_email}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{login_password}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "User Update Profile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "310bd3c9-67f9-4a2e-9aac-aca6e5ba0917",
+								"exec": [
+									"data = pm.environment.get(\"update_profile\"); \r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"michael.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"1234\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"update_profile_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"update_profile_username\": \"michael.com\",\r",
+									"            \"update_profile_password\": \"1234\",\r",
+									"            \"update_profile_status_code\": 200,\r",
+									"            \"update_profile_body\": {\r",
+									"                \"message\": \"Profile berhasil di update\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"update_profile_username\": \"xyz\",\r",
+									"            \"update_profile_password\": \"1234\",\r",
+									"            \"update_profile_status_code\": 404,\r",
+									"            \"update_profile_body\": {\r",
+									"                \"message\": \"user dengan email tersebut tidak ditemukan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"update_profile_username\", currentData[\"update_profile_username\"]);\r",
+									"pm.environment.set(\"update_profile_password\", currentData[\"update_profile_password\"]);\r",
+									"pm.environment.set(\"update_profile_status_code\", currentData[\"update_profile_status_code\"]);\r",
+									"pm.environment.set(\"update_profile_body\", currentData[\"update_profile_body\"]);\r",
+									"pm.environment.set(\"update_profile\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f9366ad8-f241-458a-98c0-6bd669a633fa",
+								"exec": [
+									"data = pm.environment.get(\"update_profile\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Update Profile\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"update_profile_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"update_profile_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"update_profile_username\");\r",
+									"    pm.environment.unset(\"update_profile_password\");\r",
+									"    pm.environment.unset(\"update_profile_status_code\");\r",
+									"    pm.environment.unset(\"update_profile_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{update_profile_apikey}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "{{update_profile_username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{update_profile_password}}",
+									"type": "text"
+								},
+								{
+									"key": "profile_picture",
+									"type": "file",
+									"src": "/C:/Users/michael/Pictures/30990-cddvd-hatsune-miku-magical-mirai-2019-official-album-limited-edition.jpg"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"formdata": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/profile/update_profile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"profile",
+								"update_profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Upgrade Premium",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "40ceef38-bfb7-46e2-b625-420b17f1de8a",
+								"exec": [
+									"data = pm.environment.get(\"upgrade_premium\"); \r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"michael.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"1234\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"upgrade_premium_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"upgrade_premium_credit_card_number\": \"4242424242424242\",\r",
+									"            \"upgrade_premium_expired_month\": \"5\",\r",
+									"            \"upgrade_premium_expired_year\": \"2021\",\r",
+									"            \"upgrade_premium_cvc\": \"314\",\r",
+									"            \"upgrade_premium_status_code\": 200,\r",
+									"            \"upgrade_premium_body\": {\r",
+									"                \"message\": \"Pembayaran telah berhasil dilakukan, anda telah menjadi premium member\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"upgrade_premium_credit_card_number\": \"4242424242424242\",\r",
+									"            \"upgrade_premium_expired_month\": \"5\",\r",
+									"            \"upgrade_premium_expired_year\": \"2021\",\r",
+									"            \"upgrade_premium_cvc\": \"314\",\r",
+									"            \"upgrade_premium_status_code\": 404,\r",
+									"            \"upgrade_premium_body\": {\r",
+									"                \"message\": \"user dengan email tersebut tidak ditemukan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"upgrade_premium_credit_card_number\", currentData[\"upgrade_premium_credit_card_number\"]);\r",
+									"pm.environment.set(\"upgrade_premium_expired_month\", currentData[\"upgrade_premium_expired_month\"]);\r",
+									"pm.environment.set(\"upgrade_premium_expired_year\", currentData[\"upgrade_premium_expired_year\"]);\r",
+									"pm.environment.set(\"upgrade_premium_cvc\", currentData[\"upgrade_premium_cvc\"]);\r",
+									"pm.environment.set(\"upgrade_premium_status_code\", currentData[\"upgrade_premium_status_code\"]);\r",
+									"pm.environment.set(\"upgrade_premium_body\", currentData[\"upgrade_premium_body\"]);\r",
+									"pm.environment.set(\"upgrade_premium\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0e3e479-2bc6-4c41-a7f9-d28723a57f6e",
+								"exec": [
+									"data = pm.environment.get(\"upgrade_premium\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Upgrade Premium\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"upgrade_premium_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"upgrade_premium_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"upgrade_premium_credit_card_number\");\r",
+									"    pm.environment.unset(\"upgrade_premium_expired_month\");\r",
+									"    pm.environment.unset(\"upgrade_premium_expired_year\");\r",
+									"    pm.environment.unset(\"upgrade_premium_cvc\");\r",
+									"    pm.environment.unset(\"upgrade_premium_status_code\");\r",
+									"    pm.environment.unset(\"upgrade_premium_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{upgrade_premium_apikey}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "credit_card_number",
+									"value": "{{upgrade_premium_credit_card_number}}",
+									"type": "text"
+								},
+								{
+									"key": "expired_month",
+									"value": "{{upgrade_premium_expired_month}}",
+									"type": "text"
+								},
+								{
+									"key": "expired_year",
+									"value": "{{upgrade_premium_expired_year}}",
+									"type": "text"
+								},
+								{
+									"key": "cvc",
+									"value": "{{upgrade_premium_cvc}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"formdata": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/profile/upgrade_premium",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"profile",
+								"upgrade_premium"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Application",
+			"item": [
+				{
+					"name": "Get App Detail",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "05e58e9e-251f-42bc-b4c7-b49e9606c6d2",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a10158ff-6d9d-4634-9312-ab64c4f6ba16",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"KTU IF lecture schedule\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should have publisher name MIK apps\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.publisher_name).to.eql(\"MIK apps\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pa2UuY29tIiwibGV2ZWwiOjEsImlhdCI6MTU5MDY0ODQ3NCwiZXhwIjoxNTkwNjUyMDc0fQ.hkV6lL6QGfnoG_GePY8uWnRbECy44CZExN1dSKSl4XM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "app_id",
+									"value": "com.ktucalender",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/app/app?app_id=com.ktucalender",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"app",
+								"app"
+							],
+							"query": [
+								{
+									"key": "app_id",
+									"value": "com.ktucalender"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get App Recommendation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "af4c46c7-c6c5-4546-a8d4-2da27ae78aa0",
+								"exec": [
+									"let queue = pm.environment.get(\"post_review\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_data_apikey\", response.text());\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "61bf013b-5a01-4894-9113-cfefea7ade03",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"tests[\"Data response lebih dari 0\"] = pm.response.json().length > 0;\r",
+									"tests[\"Data response tidak ditemukan\"] = pm.response.json().length <= 0;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{post_data_apikey}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/api/app/recommendation",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"app",
+								"recommendation"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Wishlist",
+			"item": [
+				{
+					"name": "Show Wishlist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "07f34359-3590-4ac4-900a-fd99a41ea28e",
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"post\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"mike.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"get_wishlist_token\", response.text());\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"get_wishlist_status_code\", 200);\r",
+									"pm.environment.set(\"get_wishlist_body\", {\"app_id\": []});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "865f8173-399f-4bf3-933e-4b8b0da7daaf",
+								"exec": [
+									"data = pm.environment.get(\"get_wishlist\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"Show Wishlist\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"get_wishlist_status_code\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"get_wishlist\");\r",
+									"    pm.environment.unset(\"get_wishlist_status_code\");\r",
+									"    pm.environment.unset(\"get_wishlist_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{get_wishlist_token}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/api/wishlist",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Wishlist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8375aad9-fc4a-4186-9b26-a0b86930b629",
+								"exec": [
+									"data = pm.environment.get(\"post_wishlist\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"post\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"mike.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_wishlist_token\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"post_wishlist_app_id\": \"com.ktucalender\",\r",
+									"            \"post_wishlist_status_code\": 200,\r",
+									"            \"post_wishlist_body\": {\r",
+									"                \"message\": \"app berhasil ditambahkan ke wishlist\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"post_wishlist_app_id\": \"com.ktucalender\",\r",
+									"            \"post_wishlist_status_code\": 400,\r",
+									"            \"post_wishlist_body\": {\r",
+									"                \"message\": \"Aplikasi sudah ada di wishlist\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"post_wishlist_app_id\": \"com.ktucalende\",\r",
+									"            \"post_wishlist_status_code\": 400,\r",
+									"            \"post_wishlist_body\": {\r",
+									"                \"message\": \"Aplikasi tidak ditemukan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"post_wishlist_app_id\", currentData[\"post_wishlist_app_id\"]);\r",
+									"pm.environment.set(\"post_wishlist_status_code\", currentData[\"post_wishlist_status_code\"]);\r",
+									"pm.environment.set(\"post_wishlist_body\", currentData[\"post_wishlist_body\"]);\r",
+									"pm.environment.set(\"post_wishlist\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "79b0b783-9f86-408a-8905-23de7ba1a342",
+								"exec": [
+									"data = pm.environment.get(\"post_wishlist\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"Add Wishlist\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"post_wishlist_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"post_wishlist_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"post_wishlist\");\r",
+									"    pm.environment.unset(\"post_wishlist_app_id\");\r",
+									"    pm.environment.unset(\"post_wishlist_api_key\");\r",
+									"    pm.environment.unset(\"post_wishlist_status_code\");\r",
+									"    pm.environment.unset(\"post_wishlist_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{post_wishlist_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "app_id",
+									"value": "{{post_wishlist_app_id}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/wishlist",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Wishlist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a32f7734-3e48-4e23-86fe-a69d2826d088",
+								"exec": [
+									"data = pm.environment.get(\"del_wishlist\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"post\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"mike.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"del_wishlist_token\", response.text());\r",
+									"})\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"del_wishlist_app_id\": \"com.ktucalender\",\r",
+									"            \"del_wishlist_status_code\": 200,\r",
+									"            \"del_wishlist_body\": {\r",
+									"                \"message\": \"app berhasil dibuang dari wishlist\"\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"del_wishlist_app_id\": \"com.ktucalende\",\r",
+									"            \"del_wishlist_status_code\": 400,\r",
+									"            \"del_wishlist_body\": {\r",
+									"                \"message\": \"Aplikasi tidak ditemukan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"del_wishlist_app_id\", currentData[\"del_wishlist_app_id\"]);\r",
+									"pm.environment.set(\"del_wishlist_status_code\", currentData[\"del_wishlist_status_code\"]);\r",
+									"pm.environment.set(\"del_wishlist_body\", currentData[\"del_wishlist_body\"]);\r",
+									"pm.environment.set(\"del_wishlist\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "7663284d-61f6-4c74-8b04-5cf9f8e19c22",
+								"exec": [
+									"data = pm.environment.get(\"del_wishlist\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"Remove Wishlist\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"del_wishlist_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"del_wishlist_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"del_wishlist\");\r",
+									"    pm.environment.unset(\"del_wishlist_app_id\");\r",
+									"    pm.environment.unset(\"del_wishlist_status_code\");\r",
+									"    pm.environment.unset(\"del_wishlist_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{del_wishlist_token}}"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "app_id",
+									"value": "{{del_wishlist_app_id}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/wishlist",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Voting",
+			"item": [
+				{
+					"name": "User Get Ranking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "bee8696e-fc91-45ef-8bac-49920fe8141a",
+								"exec": [
+									"data = pm.environment.get(\"get_ranking\"); \r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"get_ranking_id_list_vote\": 18,\r",
+									"            \"get_ranking_status_code\": 200,\r",
+									"            \"get_ranking_body\": {\r",
+									"                \"message\": \"Vote anda telah disimpan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"get_ranking_id_list_vote\", currentData[\"get_ranking_id_list_vote\"]);\r",
+									"pm.environment.set(\"get_ranking_status_code\", currentData[\"get_ranking_status_code\"]);\r",
+									"pm.environment.set(\"get_ranking_body\", currentData[\"get_ranking_body\"]);\r",
+									"pm.environment.set(\"get_ranking\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "d852e3cf-1075-400d-b946-4e0ad42a3bdc",
+								"exec": [
+									"data = pm.environment.get(\"get_ranking\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Get Ranking\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"get_ranking_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"get_ranking_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"get_ranking_id_list_vote\");\r",
+									"    pm.environment.unset(\"get_ranking_status_code\");\r",
+									"    pm.environment.unset(\"get_ranking_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_list_vote",
+									"value": "{{get_ranking_id_list_vote}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"formdata": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/vote/get_ranking_vote",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"vote",
+								"get_ranking_vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Input Vote User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "310b9305-5e9c-4783-8aca-6270082d90ad",
+								"exec": [
+									"data = pm.environment.get(\"input_vote\"); \r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"michael.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"1234\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"input_vote_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"input_vote_id_list_vote\": \"18\",\r",
+									"            \"input_vote_indeks_pilihan_vote\": \"2\",\r",
+									"            \"input_vote_status_code\": 200,\r",
+									"            \"input_vote_body\": {\r",
+									"                \"message\": \"Vote anda telah disimpan\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"input_vote_id_list_vote\", currentData[\"input_vote_id_list_vote\"]);\r",
+									"pm.environment.set(\"input_vote_indeks_pilihan_vote\", currentData[\"input_vote_indeks_pilihan_vote\"]);\r",
+									"pm.environment.set(\"input_vote_status_code\", currentData[\"input_vote_status_code\"]);\r",
+									"pm.environment.set(\"input_vote_body\", currentData[\"input_vote_body\"]);\r",
+									"pm.environment.set(\"input_vote\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "28f6caff-ee54-4e31-8cf9-34123b8b88e5",
+								"exec": [
+									"data = pm.environment.get(\"input_vote\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"Input Vote User\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"input_vote_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"input_vote_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"input_vote_id_list_app\");\r",
+									"    pm.environment.unset(\"input_vote_indeks_pilihan_vote\");\r",
+									"    pm.environment.unset(\"input_vote_status_code\");\r",
+									"    pm.environment.unset(\"input_vote_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{input_vote_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/vote/input_vote",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"vote",
+								"input_vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Making Vote",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e910f72d-9871-40a7-a1d2-c886fe708697",
+								"exec": [
+									"data = pm.environment.get(\"make_vote\"); \r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"michael.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"1234\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"make_vote_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"make_vote_list_id_app\": \"com.hazelfunstudio.icecream.donut.maker,com.fungameco.klondike.solitaire\",\r",
+									"            \"make_vote_judul_vote\": \"Greatest hits 2020\",\r",
+									"            \"make_vote_status_code\": 200,\r",
+									"            \"make_vote_body\": {\r",
+									"                \"message\": \"Vote berhasil dibuat\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"make_vote_list_id_app\", currentData[\"make_vote_list_id_app\"]);\r",
+									"pm.environment.set(\"make_vote_judul_vote\", currentData[\"make_vote_judul_vote\"]);\r",
+									"pm.environment.set(\"make_vote_status_code\", currentData[\"make_vote_status_code\"]);\r",
+									"pm.environment.set(\"make_vote_body\", currentData[\"make_vote_body\"]);\r",
+									"pm.environment.set(\"update_profile\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "dda2c31c-c48b-4f48-aac4-7cb0e937eaf9",
+								"exec": [
+									"data = pm.environment.get(\"make_vote\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"User Make Vote\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"make_vote_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"make_vote_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"make_vote_list_id_app\");\r",
+									"    pm.environment.unset(\"make_vote_judul_vote\");\r",
+									"    pm.environment.unset(\"make_vote_status_code\");\r",
+									"    pm.environment.unset(\"make_vote_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{make_vote_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "judul_vote",
+									"value": "{{make_vote_judul_vote}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"formdata": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/vote/make_vote?id_app={{make_vote_list_id_app}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"vote",
+								"make_vote"
+							],
+							"query": [
+								{
+									"key": "id_app",
+									"value": "{{make_vote_list_id_app}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Add Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "46b87c87-9469-400f-84f9-810d3b62b678",
+								"exec": [
+									"data = pm.environment.get(\"post_post\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"post_data_id_app\": \"com.missuniverse\",\r",
+									"            \"post_data_judul\": \"Top Teen Selfie 2020\",\r",
+									"            \"post_data_caption\" : \"Vote this natural beauty\",\r",
+									"            \"post_data_status_code\" : 200,\r",
+									"            \"post_data_body\": {\r",
+									"                \"status\": \"Berhasil Post\",\r",
+									"                \"error\" : \"\",\r",
+									"            }\r",
+									"        }\r",
+									"    ]   \r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"post_data_id_app\", currentData[\"post_data_id_app\"]);\r",
+									"pm.environment.set(\"post_data_judul\", currentData[\"post_data_judul\"]);\r",
+									"pm.environment.set(\"post_data_caption\", currentData[\"post_data_caption\"]);\r",
+									"pm.environment.set(\"post_data_status_code\", currentData[\"post_data_status_code\"]);\r",
+									"pm.environment.set(\"post_data_body\", currentData[\"post_data_body\"]);\r",
+									"pm.environment.set(\"post_wishlist\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "34ebe8fd-269d-453a-97de-f8da8bc89b75",
+								"exec": [
+									"data = pm.environment.get(\"post_post\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Add Post\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"post_data_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"post_data_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"post_data_id_app\");\r",
+									"    pm.environment.unset(\"post_data_caption\");\r",
+									"    pm.environment.unset(\"post_data_judul\");\r",
+									"    pm.environment.unset(\"post_data_status_code\");\r",
+									"    pm.environment.unset(\"post_data_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "Content-Type",
+								"type": "text",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "x-auth-token",
+								"type": "text",
+								"value": "{{post_data_apikey}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "app_id",
+									"value": "{{post_data_id_app}}",
+									"type": "text"
+								},
+								{
+									"key": "judul",
+									"value": "{{post_data_judul}}",
+									"type": "text"
+								},
+								{
+									"key": "caption",
+									"value": "{{post_data_caption}}",
+									"type": "text"
+								},
+								{
+									"key": "body",
+									"value": "{app_id:\"GLE231\",judul:\"Test Postingan\",caption:\"Halo Surabaya!\"}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "img_post",
+									"type": "file",
+									"src": "/C:/Users/fumin/Downloads/845dc3e86153cac3c428228eda011797.jpg"
+								}
+							],
+							"options": {
+								"formdata": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8a50d8e1-dcd3-44bf-becc-a0a016b647c8",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "2cc6370b-1c6e-407c-a759-205d6c5380f8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\r",
+									"    \"post\": {\r",
+									"        \"id_post\": \"int\",\r",
+									"        \"id_user\": \"int\",\r",
+									"\t\t\"id_app\" : \"string\",\r",
+									"\t\t\"judul_post\" : \"string\",\r",
+									"\t\t\"caption_post\" : \"string\",\r",
+									"\t\t\"total_review\" : \"int\",\r",
+									"\t\t\"total_like\" : \"int\",\r",
+									"\t\t\"total_dislike\" : \"int\"\r",
+									"\t}\r",
+									"};\r",
+									"\r",
+									"pm.test('Schema is valid', function() {\r",
+									"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"tests[\"Data response lebih dari 0\"] = pm.response.json().length > 0;\r",
+									"tests[\"Data response tidak ditemukan\"] = pm.response.json().length <= 0;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/api/post/view?search=&id_app=32&date",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"view"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": ""
+								},
+								{
+									"key": "id_app",
+									"value": "32"
+								},
+								{
+									"key": "date",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c7d4ecfc-532a-40e8-8bf9-aa55c6a0ec7e",
+								"exec": [
+									"data = pm.environment.get(\"delete_post\");",
+									"",
+									"pm.sendRequest({",
+									"    url: \"localhost:3000/api/MC/login\",",
+									"    method: \"POST\",",
+									"    body: {",
+									"        mode: \"urlencoded\",",
+									"        urlencoded: [",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},",
+									"            {key:\"password\", value:\"ming123\", disabled:false}",
+									"        ]",
+									"    }",
+									"}, function (err, response) {",
+									"    pm.environment.set(\"delete_data_apikey\", response.text());",
+									"});",
+									"",
+									"if (!data || data.length <= 0) {",
+									"    data = [",
+									"        {",
+									"            \"delete_data_id_post\": \"40\",",
+									"            \"delete_data_status_code\": 200,",
+									"            \"delete_data_body\": [{",
+									"                \"status\": \"Berhasil Delete\",",
+									"                \"error\":\"\",",
+									"                \"data\":[]",
+									"            }]",
+									"        }",
+									"    ]",
+									"}",
+									"",
+									"let currentData = data.shift();",
+									"pm.environment.set(\"delete_data_id_post\", currentData[\"delete_data_id_post\"]);",
+									"pm.environment.set(\"delete_data_status_code\", currentData[\"delete_data_status_code\"]);",
+									"pm.environment.set(\"delete_data_body\",currentData[\"delete_data_body\"]);",
+									"pm.environment.set(\"delete_data\", data);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "96353c45-24aa-4663-b91c-5859485729e8",
+								"exec": [
+									"data = pm.environment.get(\"delete_post\");",
+									"flag = false;",
+									"",
+									"if (data && data.length > 0) {",
+									"    postman.setNextRequest(\"- Delete Post\");",
+									"} else {",
+									"    flag = true;",
+									"}",
+									"",
+									"pm.test(\"Status code is correct\", function () {",
+									"    pm.response.to.have.status(pm.variables.get(\"delete_data_status_code\"));",
+									"});",
+									"",
+									"pm.test(\"Returned data is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"delete_data_body\"));",
+									"});",
+									"",
+									"if (flag) {",
+									"    pm.environment.unset(\"delete_wishlist\");",
+									"    pm.environment.unset(\"delete_data_body\");",
+									"    pm.environment.unset(\"delete_data_status_code\")",
+									"    pm.environment.unset(\"delete_data_id_post\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{delete_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{delete_data_id_post}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/delete",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e927b0ac-c059-452a-b818-7c82f0c273e5",
+								"exec": [
+									"let queue = pm.environment.get(\"update_post\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"update_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if(!queue || queue.length <=0){\r",
+									"    queue = [\r",
+									"        {\r",
+									"            \"update_data_id_post\" : 47,\r",
+									"            \"update_data_judul\" : \"Game Underated 2020\",\r",
+									"            \"update_data_caption\" : \"Maaf atas kesalahan rank pada post sebelumnya!\",\r",
+									"            \"update_data_status_code\" : 200,\r",
+									"            \"update_data_body\" : [{\r",
+									"               \"status\"  : \"Berhasil Update\",\r",
+									"               \"error\" : \"\",\r",
+									"               \"data\" : []\r",
+									"            }]\r",
+									"        },\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"let currentData = queue.shift();\r",
+									"pm.environment.set(\"update_data_id_post\", currentData[\"update_data_id_post\"]);\r",
+									"pm.environment.set(\"update_data_judul\", currentData[\"update_data_judul\"]);\r",
+									"pm.environment.set(\"update_data_caption\", currentData[\"update_data_caption\"]);\r",
+									"pm.environment.set(\"update_data_status_code\", currentData[\"update_data_status_code\"]);\r",
+									"pm.environment.set(\"update_data_body\", currentData[\"update_data_body\"]);\r",
+									"pm.environment.set(\"update_post\", queue);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "37df8355-5a1f-40d0-bb7f-aef0befa0ac4",
+								"exec": [
+									"data = pm.environment.get(\"update_post\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Update Post\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"update_data_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"update_data_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"update_data_id_app\");\r",
+									"    pm.environment.unset(\"update_data_caption\");\r",
+									"    pm.environment.unset(\"update_data_judul\");\r",
+									"    pm.environment.unset(\"update_data_status_code\");\r",
+									"    pm.environment.unset(\"update_data_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{update_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{update_data_id_post}}",
+									"type": "text"
+								},
+								{
+									"key": "caption",
+									"value": "{{update_data_caption}}",
+									"type": "text"
+								},
+								{
+									"key": "judul",
+									"value": "{{update_data_judul}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/edit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e371478d-7b92-4918-9ab2-17d705c51dca",
+								"exec": [
+									"let queue = pm.environment.get(\"post_review\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"\r",
+									"if(!queue || queue.length <= 0){\r",
+									"    queue = [\r",
+									"        {\r",
+									"            \"post_data_id_post\" : 34,\r",
+									"            \"post_data_comment\" : \"Wow tidak nyangka nomor 1 game itu!\",\r",
+									"            \"post_data_status_code\" : 200,\r",
+									"            \"post_data_body\" : {\r",
+									"               \"status\"  : \"Berhasil Comment\",\r",
+									"               \"error\" : \"\"\r",
+									"            }\r",
+									"        }\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"let currentData = queue.shift();\r",
+									"pm.environment.set(\"post_data_id_post\", currentData[\"post_data_id_post\"]);\r",
+									"pm.environment.set(\"post_data_comment\", currentData[\"post_data_comment\"]);\r",
+									"pm.environment.set(\"post_data_status_code\", currentData[\"post_data_status_code\"]);\r",
+									"pm.environment.set(\"post_data_body\", currentData[\"post_data_body\"]);\r",
+									"pm.environment.set(\"post_data\", queue);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b56db47a-60ff-476a-983b-7bb2b4ac3558",
+								"exec": [
+									"data = pm.environment.get(\"post_review\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Update Post\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"post_data_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"post_data_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"post_data\");\r",
+									"    pm.environment.unset(\"post_data_id_app\");\r",
+									"    pm.environment.unset(\"post_data_caption\");\r",
+									"    pm.environment.unset(\"post_data_judul\");\r",
+									"    pm.environment.unset(\"post_data_status_code\");\r",
+									"    pm.environment.unset(\"post_data_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{post_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{post_data_id_post}}",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "{{post_data_comment}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/comment",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "211207e0-0c40-4247-b208-363e9687e97a",
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"get_data_apikey\", response.text());\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a8dd5670-8e04-4d86-9759-8bfe396c4860",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\r",
+									"    \"post\": {\r",
+									"        \"id_post\": \"int\",\r",
+									"        \"id_user\": \"int\",\r",
+									"\t\t\"id_app\" : \"string\",\r",
+									"\t\t\"judul_post\" : \"string\",\r",
+									"\t\t\"caption_post\" : \"string\",\r",
+									"\t\t\"total_review\" : \"int\",\r",
+									"\t\t\"total_like\" : \"int\",\r",
+									"\t\t\"total_dislike\" : \"int\"\r",
+									"\t}\r",
+									"};\r",
+									"\r",
+									"pm.test('Schema is valid', function() {\r",
+									"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"tests[\"Data response lebih dari 0\"] = pm.response.json().length > 0;\r",
+									"tests[\"Data response tidak ditemukan\"] = pm.response.json().length <= 0;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{get_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/api/post/mypost",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"mypost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4c857bb3-dba5-4ff2-9f1c-ba3f31b03191",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\r",
+									"    \"post\": {\r",
+									"        \"id_post\": \"int\",\r",
+									"        \"id_user\": \"int\",\r",
+									"\t\t\"id_app\" : \"string\",\r",
+									"\t\t\"judul_post\" : \"string\",\r",
+									"\t\t\"caption_post\" : \"string\",\r",
+									"\t\t\"total_review\" : \"int\",\r",
+									"\t\t\"total_like\" : \"int\",\r",
+									"\t\t\"total_dislike\" : \"int\"\r",
+									"\t}\r",
+									"};\r",
+									"\r",
+									"pm.test('Schema is valid', function() {\r",
+									"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"tests[\"Data response lebih dari 0\"] = pm.response.json().length > 0;\r",
+									"tests[\"Data response tidak ditemukan\"] = pm.response.json().length <= 0;"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8342124d-a795-4162-b828-4bae579666cb",
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"get_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									" pm.environment.set(\"get_data_id_post\", \"34\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{get_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{get_data_id_post}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/get_review",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"get_review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8c4fc668-5430-40f9-85ff-0128c3c277b1",
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									" pm.environment.set(\"post_data_id_post\", \"34\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "44737828-e570-4068-8464-b4c4f1a41b52",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{post_data_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{post_data_id_post}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/like",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dislike Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "b980877f-39d2-4762-9550-c6d949467559",
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/MC/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_data_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									" pm.environment.set(\"post_data_id_post\", \"34\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "aacf1a7d-f4f2-4fc2-8a4d-3b66236c4b97",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{post_data_api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_post",
+									"value": "{{post_data_api_key}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/post/dislike",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"post",
+								"dislike"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Rating",
+			"item": [
+				{
+					"name": "Insert Rating",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "71c5b823-7970-48a3-89b2-3f44d3a2c8df",
+								"exec": [
+									"data = pm.environment.get(\"post_rating\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"post_rating_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"post_rating_appID\": \"com.ktucalender\",\r",
+									"            \"post_rating_rating\": 9,\r",
+									"            \"post_rating_comment\" : \"This app helps me a lot!\",\r",
+									"            \"post_rating_status_code\" : 200,\r",
+									"            \"post_rating_body\": {\r",
+									"                \"message\": \"Insert rating berhasil!\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]   \r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"post_rating_appID\", currentData[\"post_rating_appID\"]);\r",
+									"pm.environment.set(\"post_rating_rating\", currentData[\"post_rating_rating\"]);\r",
+									"pm.environment.set(\"post_rating_comment\", currentData[\"post_rating_comment\"]);\r",
+									"pm.environment.set(\"post_rating_status_code\", currentData[\"post_rating_status_code\"]);\r",
+									"pm.environment.set(\"post_rating_body\", currentData[\"post_rating_body\"]);\r",
+									"pm.environment.set(\"post_rating\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "82755a59-005f-48fd-b9b8-b34b76c6093c",
+								"exec": [
+									"data = pm.environment.get(\"post_rating\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Insert Rating\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"post_rating_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"post_rating_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"post_rating_appID\");\r",
+									"    pm.environment.unset(\"post_rating_rating\");\r",
+									"    pm.environment.unset(\"post_rating_comment\");\r",
+									"    pm.environment.unset(\"post_rating_status_code\");\r",
+									"    pm.environment.unset(\"post_rating_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{post_rating_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "appID",
+									"value": "{{post_rating_appID}}",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "{{post_rating_rating}}",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "{{post_rating_comment}}",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/rating",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Rating",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ea7d2e95-3c76-4b06-9201-c13353cc3880",
+								"exec": [
+									"data = pm.environment.get(\"put_rating\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"put_rating_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"put_rating_ratingID\": 2,\r",
+									"            \"put_rating_rating\": 9,\r",
+									"            \"put_rating_comment\" : \"This app helps me a lot!\",\r",
+									"            \"put_data_status_code\" : 200,\r",
+									"            \"put_data_body\": {\r",
+									"                \"message\": \"Edit rating berhasil!\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]   \r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"put_rating_ratingID\", currentData[\"put_rating_ratingID\"]);\r",
+									"pm.environment.set(\"put_rating_rating\", currentData[\"put_rating_rating\"]);\r",
+									"pm.environment.set(\"put_rating_comment\", currentData[\"put_rating_comment\"]);\r",
+									"pm.environment.set(\"put_data_status_code\", currentData[\"put_data_status_code\"]);\r",
+									"pm.environment.set(\"put_data_body\", currentData[\"put_data_body\"]);\r",
+									"pm.environment.set(\"put_rating\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "706a2ba5-e72a-416a-a790-ae13cf4f097a",
+								"exec": [
+									"data = pm.environment.get(\"put_rating\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Edit Rating\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"put_rating_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"put_rating_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"put_rating_ratingID\");\r",
+									"    pm.environment.unset(\"put_rating_rating\");\r",
+									"    pm.environment.unset(\"put_rating_comment\");\r",
+									"    pm.environment.unset(\"put_rating_status_code\");\r",
+									"    pm.environment.unset(\"put_rating_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{put_rating_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ratingID",
+									"value": "{{put_rating_ratingID}}",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "{{put_rating_rating}}",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "{{put_rating_comment}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/rating",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rating By App or ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e55ad430-9a5c-4b34-b468-fbf20dd04b1c",
+								"exec": [
+									"data = pm.environment.get(\"get_rating\");\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"get_rating_query\": 1,\r",
+									"            \"get_rating_status_code\": 200,\r",
+									"            \"get_rating_body\": {\r",
+									"                \"value\": []\r",
+									"            }\r",
+									"        },\r",
+									"        {\r",
+									"            \"get_rating_query\": \"com.ktucalender\",\r",
+									"            \"get_rating_status_code\": 200,\r",
+									"            \"get_rating_body\": {\r",
+									"                \"value\": []\r",
+									"            }\r",
+									"        }\r",
+									"     ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"get_rating_query\", currentData[\"get_rating_query\"]);\r",
+									"pm.environment.set(\"get_rating_status_code\", currentData[\"get_rating_status_code\"]);\r",
+									"pm.environment.set(\"get_rating_body\", currentData[\"get_rating_body\"]);\r",
+									"pm.environment.set(\"get_rating\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "2276e346-88f7-4914-9cfd-08f0d6f7defc",
+								"exec": [
+									"data = pm.environment.get(\"get_rating\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Get Rating\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"get_rating_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"get_rating_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"get_rating_query\");\r",
+									"    pm.environment.unset(\"get_rating_status_code\");\r",
+									"    pm.environment.unset(\"get_rating_body\");\r",
+									"    pm.environment.unset(\"get_rating\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/rating?query={{get_rating_query}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"rating"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "{{get_rating_query}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Rating By ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "94e1518e-2784-47be-b78f-a86df429ecef",
+								"exec": [
+									"data = pm.environment.get(\"del_rating\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"del_rating_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"del_rating_ratingID\": 1,\r",
+									"            \"del_rating_status_code\": 200,\r",
+									"            \"del_rating_body\": [{\r",
+									"                \"message\" : \"Rating berhasil dihapus!\"\r",
+									"            }]\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"del_rating_ratingID\", currentData[\"del_rating_ratingID\"]);\r",
+									"pm.environment.set(\"del_rating_status_code\", currentData[\"del_rating_status_code\"]);\r",
+									"pm.environment.set(\"del_rating_body\",currentData[\"del_rating_body\"]);\r",
+									"pm.environment.set(\"del_rating\", data);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "bc12034a-77a4-4773-948d-813e0557a719",
+								"exec": [
+									"data = pm.environment.get(\"del_rating\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Delete Rating\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"del_rating_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"del_rating_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"del_rating_ratingID\");\r",
+									"    pm.environment.unset(\"del_rating_status_code\");\r",
+									"    pm.environment.unset(\"del_rating_body\");\r",
+									"    pm.environment.unset(\"del_rating\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{del_rating_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ratingID",
+									"value": "{{del_rating_ratingID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/rating",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Like",
+			"item": [
+				{
+					"name": "Add Like on Rating",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d40a7314-224f-4a12-baa5-c934f6c4d19c",
+								"exec": [
+									"data = pm.environment.get(\"add_like\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"add_like_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"add_like_ratingID\": 1,\r",
+									"            \"add_like_comment\" : \"Deffo agree!\",\r",
+									"            \"add_like_status_code\" : 200,\r",
+									"            \"add_like_body\": {\r",
+									"                \"message\": \"Insert like berhasil!\"\r",
+									"            }\r",
+									"        }\r",
+									"    ]   \r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"add_like_ratingID\", currentData[\"add_like_ratingID\"]);\r",
+									"pm.environment.set(\"add_like_comment\", currentData[\"add_like_comment\"]);\r",
+									"pm.environment.set(\"add_like_status_code\", currentData[\"add_like_status_code\"]);\r",
+									"pm.environment.set(\"add_like_body\", currentData[\"add_like_body\"]);\r",
+									"pm.environment.set(\"add_like\", data);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "838b2dcf-3917-4a14-a157-e2b4b1feb868",
+								"exec": [
+									"data = pm.environment.get(\"add_like\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Insert Rating\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"add_like_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"add_like_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"add_like_ratingID\");\r",
+									"    pm.environment.unset(\"add_like_comment\");\r",
+									"    pm.environment.unset(\"add_like_status_code\");\r",
+									"    pm.environment.unset(\"add_like_body\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{add_like_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ratingID",
+									"value": "{{add_like_ratingID}}",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "{{add_like_comment}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/like",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Like on Rating",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a93ac08b-4112-49c1-bb7d-db06b8841f14",
+								"exec": [
+									"data = pm.environment.get(\"del_like\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: \"localhost:3000/api/user/login\",\r",
+									"    method: \"POST\",\r",
+									"    body: {\r",
+									"        mode: \"urlencoded\",\r",
+									"        urlencoded: [\r",
+									"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+									"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+									"        ]\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.environment.set(\"del_like_apikey\", response.text());\r",
+									"});\r",
+									"\r",
+									"if (!data || data.length <= 0) {\r",
+									"    data = [\r",
+									"        {\r",
+									"            \"del_like_likeID\": 1,\r",
+									"            \"del_like_status_code\": 200,\r",
+									"            \"del_like_body\": [{\r",
+									"                \"message\" : \"Like berhasil dihapus!\"\r",
+									"            }]\r",
+									"        }\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"let currentData = data.shift();\r",
+									"pm.environment.set(\"del_like_likeID\", currentData[\"del_like_likeID\"]);\r",
+									"pm.environment.set(\"del_like_status_code\", currentData[\"del_like_status_code\"]);\r",
+									"pm.environment.set(\"del_like_body\",currentData[\"del_like_body\"]);\r",
+									"pm.environment.set(\"del_like\", data);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9155a257-e5b3-4957-b28b-064da83644fe",
+								"exec": [
+									"data = pm.environment.get(\"del_like\");\r",
+									"flag = false;\r",
+									"\r",
+									"if (data && data.length > 0) {\r",
+									"    postman.setNextRequest(\"- Delete Like\");\r",
+									"} else {\r",
+									"    flag = true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is correct\", function () {\r",
+									"    pm.response.to.have.status(pm.variables.get(\"del_like_status_code\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Returned data is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.eql(pm.variables.get(\"del_like_body\"));\r",
+									"});\r",
+									"\r",
+									"if (flag) {\r",
+									"    pm.environment.unset(\"del_like_likeID\");\r",
+									"    pm.environment.unset(\"del_like_status_code\");\r",
+									"    pm.environment.unset(\"del_like_body\");\r",
+									"    pm.environment.unset(\"del_like\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{del_like_apikey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "likeID",
+									"value": "{{del_like_likeID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/like",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"like"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
