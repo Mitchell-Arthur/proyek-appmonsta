@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
-router.get('/rating', async function(req,res){
+router.get('/', async function(req,res){
     const query = req.query.query;
     if(!query) res.status(400).send("Query harus dicantumkan!");
     let result;
@@ -16,7 +16,7 @@ router.get('/rating', async function(req,res){
     res.status(200).send(result);
 });
 
-router.post('/rating', async function(req,res){
+router.post('/', async function(req,res){
     const token = req.header("x-auth-token");
     let user = {};
     if (!token) return res.status(401).send("Token not found");
@@ -28,11 +28,10 @@ router.post('/rating', async function(req,res){
     if(!appID || !rating || !comment) res.status(400).send("Semua field harus diisi!");
     let email = user.email;
     let result = await models.insertRating(appID, rating, comment, email); 
-    if(result) res.status(200).send("Insert rating berhasil!")
-    else res.status(400).send("Insert rating gagal.");
+    res.status(200).send({message:"Insert rating berhasil!"});
 });
 
-router.put('/rating', async function(req,res){
+router.put('/', async function(req,res){
     let ratingID = req.body.ratingID;
     let rating = req.body.rating;
     let comment = req.body.comment;
@@ -43,11 +42,10 @@ router.put('/rating', async function(req,res){
     try { user = jwt.verify(token, "lastofkelasB"); } 
     catch (err) { return res.status(401).send("Token Invalid"); } //401 not authorized
     let result = await models.editRating(ratingID, rating, comment);
-    if(result) res.status(200).send("Edit rating berhasil!");
-    else res.status(400).send("Edit rating gagal.")
+    res.status(200).send({message:"Edit rating berhasil!"});
 });
 
-router.delete('/rating', async function(req,res){
+router.delete('/', async function(req,res){
     let ratingID = req.body.ratingID;
     if(!ratingID) res.status(400).send("ID Rating harus dicantumkan!");
     const token = req.header("x-auth-token");
