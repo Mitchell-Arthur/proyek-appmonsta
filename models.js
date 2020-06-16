@@ -236,7 +236,7 @@ async function deleteLastPost(){
 
 async function getPost(search, id_app){
   const conn = await getConnection();
-  const result = await executeQuery(conn, `SELECT * FROM post WHERE judul_post LIKE '%${search}%' AND app_id='${id_app}'`);
+  const result = await executeQuery(conn, `SELECT * FROM post WHERE judul_post LIKE '%${search}%' AND LIKE '%${id_app}%'`);
   conn.release();
   return result;
 }
