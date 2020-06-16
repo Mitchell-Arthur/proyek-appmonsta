@@ -7,7 +7,6 @@ const mitchell = require("./routes/Mitchell");
 const nestor = require("./routes/Nestor");
 const likeRoutes = require("./routes/Like");
 const appRoutes = require("./routes/App");
-const likeRoutes = require("./routes/Like");
 const profileRoutes = require("./routes/Profile");
 const votingRoutes = require("./routes/Voting");
 require('dotenv').config()
