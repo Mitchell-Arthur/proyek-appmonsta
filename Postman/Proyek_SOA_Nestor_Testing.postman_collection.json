@@ -1,0 +1,716 @@
+{
+	"info": {
+		"_postman_id": "8a7d12fc-854a-418c-8e4c-3ee7c9c82cfe",
+		"name": "Proyek_SOA_Nestor_Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Nestor - Insert Rating",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3d4fc371-69da-4455-b477-ec6a03295d31",
+						"exec": [
+							"data = pm.environment.get(\"post_rating\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: \"localhost:3000/api/user/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"urlencoded\",\r",
+							"        urlencoded: [\r",
+							"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+							"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    pm.environment.set(\"post_rating_apikey\", response.text());\r",
+							"});\r",
+							"\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"post_rating_appID\": \"com.ktucalender\",\r",
+							"            \"post_rating_rating\": 9,\r",
+							"            \"post_rating_comment\" : \"This app helps me a lot!\",\r",
+							"            \"post_rating_status_code\" : 200,\r",
+							"            \"post_rating_body\": {\r",
+							"                \"message\": \"Insert rating berhasil!\"\r",
+							"            }\r",
+							"        }\r",
+							"    ]   \r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"post_rating_appID\", currentData[\"post_rating_appID\"]);\r",
+							"pm.environment.set(\"post_rating_rating\", currentData[\"post_rating_rating\"]);\r",
+							"pm.environment.set(\"post_rating_comment\", currentData[\"post_rating_comment\"]);\r",
+							"pm.environment.set(\"post_rating_status_code\", currentData[\"post_rating_status_code\"]);\r",
+							"pm.environment.set(\"post_rating_body\", currentData[\"post_rating_body\"]);\r",
+							"pm.environment.set(\"post_rating\", data);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3273209f-b325-4f9f-a01d-2e10efd47cc0",
+						"exec": [
+							"data = pm.environment.get(\"post_rating\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Insert Rating\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"post_rating_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"post_rating_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"post_rating_appID\");\r",
+							"    pm.environment.unset(\"post_rating_rating\");\r",
+							"    pm.environment.unset(\"post_rating_comment\");\r",
+							"    pm.environment.unset(\"post_rating_status_code\");\r",
+							"    pm.environment.unset(\"post_rating_body\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{post_rating_apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "appID",
+							"value": "{{post_rating_appID}}",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "{{post_rating_rating}}",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "{{post_rating_comment}}",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/rating",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nestor - Edit Rating",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7e571b19-a6e0-442b-a073-dd40f2faf35f",
+						"exec": [
+							"data = pm.environment.get(\"put_rating\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: \"localhost:3000/api/user/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"urlencoded\",\r",
+							"        urlencoded: [\r",
+							"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+							"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    pm.environment.set(\"put_rating_apikey\", response.text());\r",
+							"});\r",
+							"\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"put_rating_ratingID\": 2,\r",
+							"            \"put_rating_rating\": 9,\r",
+							"            \"put_rating_comment\" : \"This app helps me a lot!\",\r",
+							"            \"put_data_status_code\" : 200,\r",
+							"            \"put_data_body\": {\r",
+							"                \"message\": \"Edit rating berhasil!\"\r",
+							"            }\r",
+							"        }\r",
+							"    ]   \r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"put_rating_ratingID\", currentData[\"put_rating_ratingID\"]);\r",
+							"pm.environment.set(\"put_rating_rating\", currentData[\"put_rating_rating\"]);\r",
+							"pm.environment.set(\"put_rating_comment\", currentData[\"put_rating_comment\"]);\r",
+							"pm.environment.set(\"put_data_status_code\", currentData[\"put_data_status_code\"]);\r",
+							"pm.environment.set(\"put_data_body\", currentData[\"put_data_body\"]);\r",
+							"pm.environment.set(\"put_rating\", data);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2642607c-286b-41d6-8c36-7affe945c4f9",
+						"exec": [
+							"data = pm.environment.get(\"put_rating\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Edit Rating\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"put_rating_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"put_rating_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"put_rating_ratingID\");\r",
+							"    pm.environment.unset(\"put_rating_rating\");\r",
+							"    pm.environment.unset(\"put_rating_comment\");\r",
+							"    pm.environment.unset(\"put_rating_status_code\");\r",
+							"    pm.environment.unset(\"put_rating_body\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{put_rating_apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ratingID",
+							"value": "{{put_rating_ratingID}}",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "{{put_rating_rating}}",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "{{put_rating_comment}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/rating",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nestor - Get Rating By App or ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "54b8d96b-b0c0-42fd-8517-9ab93c198071",
+						"exec": [
+							"data = pm.environment.get(\"get_rating\");\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"get_rating_query\": 1,\r",
+							"            \"get_rating_status_code\": 200,\r",
+							"            \"get_rating_body\": {\r",
+							"                \"value\": []\r",
+							"            }\r",
+							"        },\r",
+							"        {\r",
+							"            \"get_rating_query\": \"com.ktucalender\",\r",
+							"            \"get_rating_status_code\": 200,\r",
+							"            \"get_rating_body\": {\r",
+							"                \"value\": []\r",
+							"            }\r",
+							"        }\r",
+							"     ]\r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"get_rating_query\", currentData[\"get_rating_query\"]);\r",
+							"pm.environment.set(\"get_rating_status_code\", currentData[\"get_rating_status_code\"]);\r",
+							"pm.environment.set(\"get_rating_body\", currentData[\"get_rating_body\"]);\r",
+							"pm.environment.set(\"get_rating\", data);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4e97dafe-6d06-4ae7-b888-76307e782099",
+						"exec": [
+							"data = pm.environment.get(\"get_rating\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Get Rating\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"get_rating_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"get_rating_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"get_rating_query\");\r",
+							"    pm.environment.unset(\"get_rating_status_code\");\r",
+							"    pm.environment.unset(\"get_rating_body\");\r",
+							"    pm.environment.unset(\"get_rating\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/rating?query={{get_rating_query}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"rating"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "{{get_rating_query}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nestor - Delete Rating By ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6b2eaa14-422f-495d-997f-c607c9bd1c57",
+						"exec": [
+							"data = pm.environment.get(\"del_rating\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: \"localhost:3000/api/user/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"urlencoded\",\r",
+							"        urlencoded: [\r",
+							"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+							"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    pm.environment.set(\"del_rating_apikey\", response.text());\r",
+							"});\r",
+							"\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"del_rating_ratingID\": 1,\r",
+							"            \"del_rating_status_code\": 200,\r",
+							"            \"del_rating_body\": [{\r",
+							"                \"message\" : \"Rating berhasil dihapus!\"\r",
+							"            }]\r",
+							"        }\r",
+							"    ]\r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"del_rating_ratingID\", currentData[\"del_rating_ratingID\"]);\r",
+							"pm.environment.set(\"del_rating_status_code\", currentData[\"del_rating_status_code\"]);\r",
+							"pm.environment.set(\"del_rating_body\",currentData[\"del_rating_body\"]);\r",
+							"pm.environment.set(\"del_rating\", data);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82278572-11d8-490a-8684-dab3c4a4e2f4",
+						"exec": [
+							"data = pm.environment.get(\"del_rating\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Delete Rating\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"del_rating_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"del_rating_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"del_rating_ratingID\");\r",
+							"    pm.environment.unset(\"del_rating_status_code\");\r",
+							"    pm.environment.unset(\"del_rating_body\");\r",
+							"    pm.environment.unset(\"del_rating\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{del_rating_apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ratingID",
+							"value": "{{del_rating_ratingID}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/rating",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nestor - Add Like on Rating",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e7edb602-aa15-45a3-b27a-aa13a9a6c9d2",
+						"exec": [
+							"data = pm.environment.get(\"add_like\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: \"localhost:3000/api/user/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"urlencoded\",\r",
+							"        urlencoded: [\r",
+							"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+							"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    pm.environment.set(\"add_like_apikey\", response.text());\r",
+							"});\r",
+							"\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"add_like_ratingID\": 1,\r",
+							"            \"add_like_comment\" : \"Deffo agree!\",\r",
+							"            \"add_like_status_code\" : 200,\r",
+							"            \"add_like_body\": {\r",
+							"                \"message\": \"Insert like berhasil!\"\r",
+							"            }\r",
+							"        }\r",
+							"    ]   \r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"add_like_ratingID\", currentData[\"add_like_ratingID\"]);\r",
+							"pm.environment.set(\"add_like_comment\", currentData[\"add_like_comment\"]);\r",
+							"pm.environment.set(\"add_like_status_code\", currentData[\"add_like_status_code\"]);\r",
+							"pm.environment.set(\"add_like_body\", currentData[\"add_like_body\"]);\r",
+							"pm.environment.set(\"add_like\", data);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "03548adf-fa22-4a1a-807f-62c13b2b2363",
+						"exec": [
+							"data = pm.environment.get(\"add_like\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Insert Rating\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"add_like_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"add_like_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"add_like_ratingID\");\r",
+							"    pm.environment.unset(\"add_like_comment\");\r",
+							"    pm.environment.unset(\"add_like_status_code\");\r",
+							"    pm.environment.unset(\"add_like_body\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{add_like_apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ratingID",
+							"value": "{{add_like_ratingID}}",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "{{add_like_comment}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/like",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Nestor - Delete Like on Rating",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "18d70b04-1ca0-43f7-8d23-bfb03ac67dee",
+						"exec": [
+							"data = pm.environment.get(\"del_like\");\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: \"localhost:3000/api/user/login\",\r",
+							"    method: \"POST\",\r",
+							"    body: {\r",
+							"        mode: \"urlencoded\",\r",
+							"        urlencoded: [\r",
+							"            {key:\"email\", value:\"ming@gmail.com\", disabled:false},\r",
+							"            {key:\"password\", value:\"ming123\", disabled:false}\r",
+							"        ]\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    pm.environment.set(\"del_like_apikey\", response.text());\r",
+							"});\r",
+							"\r",
+							"if (!data || data.length <= 0) {\r",
+							"    data = [\r",
+							"        {\r",
+							"            \"del_like_likeID\": 1,\r",
+							"            \"del_like_status_code\": 200,\r",
+							"            \"del_like_body\": [{\r",
+							"                \"message\" : \"Like berhasil dihapus!\"\r",
+							"            }]\r",
+							"        }\r",
+							"    ]\r",
+							"}\r",
+							"\r",
+							"let currentData = data.shift();\r",
+							"pm.environment.set(\"del_like_likeID\", currentData[\"del_like_likeID\"]);\r",
+							"pm.environment.set(\"del_like_status_code\", currentData[\"del_like_status_code\"]);\r",
+							"pm.environment.set(\"del_like_body\",currentData[\"del_like_body\"]);\r",
+							"pm.environment.set(\"del_like\", data);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae2dd739-4b7a-43ba-a601-34df9d918bdb",
+						"exec": [
+							"data = pm.environment.get(\"del_like\");\r",
+							"flag = false;\r",
+							"\r",
+							"if (data && data.length > 0) {\r",
+							"    postman.setNextRequest(\"- Delete Like\");\r",
+							"} else {\r",
+							"    flag = true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.response.to.have.status(pm.variables.get(\"del_like_status_code\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returned data is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(pm.variables.get(\"del_like_body\"));\r",
+							"});\r",
+							"\r",
+							"if (flag) {\r",
+							"    pm.environment.unset(\"del_like_likeID\");\r",
+							"    pm.environment.unset(\"del_like_status_code\");\r",
+							"    pm.environment.unset(\"del_like_body\");\r",
+							"    pm.environment.unset(\"del_like\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{del_like_apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "likeID",
+							"value": "{{del_like_likeID}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/like",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"like"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
