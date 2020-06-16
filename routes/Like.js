@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
-router.post('/like', async function(req,res){
+router.post('/', async function(req,res){
     let ratingID = req.body.ratingID;
     let comment = req.body.comment;
     if(!ratingID) res.status(400).send("ID Rating harus dicantumkan!");
@@ -22,7 +22,7 @@ router.post('/like', async function(req,res){
     else res.status(400).send("Insert rating gagal.")
 });
 
-router.delete('/like', async function(req,res){
+router.delete('/', async function(req,res){
     let likeID = req.body.likeID;
     if(!likeID) res.status(400).send("ID Rating harus dicantumkan!");
     const token = req.header("x-auth-token");

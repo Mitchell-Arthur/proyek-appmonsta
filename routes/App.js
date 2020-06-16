@@ -8,7 +8,7 @@ require('dotenv').config();
 const access_key = process.env.ACCESS_KEY;
 
 // get app detail
-router.get('/app', async function(req, res) {
+router.get('/', async function(req, res) {
   const ID = req.query.app_id;
   const data = await new Promise(function(resolve, reject) {
     var options = {
